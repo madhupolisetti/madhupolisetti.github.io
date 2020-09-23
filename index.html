@@ -20,6 +20,21 @@
 
   <!-- Custom styles for this template -->
   <link href="css/resume.min.css" rel="stylesheet">
+  <style type="text/css">
+	.dev-icons
+	{
+		font-size: 1rem !important;
+		text-decoration: line-through;
+	}
+	#projects .subheading
+	{
+		display: inline-block;
+		margin-left: 30px;
+	}
+	section.resume-section {
+		min-height: initial;
+	}
+  </style>
 
 </head>
 
@@ -159,9 +174,34 @@
       <div class="w-100">
         <h2 class="mb-5">Skills</h2>
 
-        <div class="subheading mb-3">Programming Languages &amp; Tools</div>
-        <ul class="list-inline dev-icons">
-          <li class="list-inline-item">
+        <div class="subheading mb-3">Technology Stack</div>
+        <ul class="fa-ul mb-0" id="tech_stack">
+			<li><i class="fa-li fa fa-check"></i>ASP.NET</li>
+			<li><i class="fa-li fa fa-check"></i>ADO.NET</li>
+			<li><i class="fa-li fa fa-check"></i>C#</li>
+			<li><i class="fa-li fa fa-check"></i>VB</li>
+			<li><i class="fa-li fa fa-check"></i>Javascript</li>
+			<li><i class="fa-li fa fa-check"></i>JQuery</li>
+			<li><i class="fa-li fa fa-check"></i>MS SQL</li>
+			<li><i class="fa-li fa fa-check"></i>AJAX</li>
+			<li><i class="fa-li fa fa-check"></i>Socket Programming</li>
+			<li><i class="fa-li fa fa-check"></i>Multi Threading</li>
+			<li><i class="fa-li fa fa-check"></i>IIS</li>
+			<li><i class="fa-li fa fa-check"></i>Apache</li>
+			<li><i class="fa-li fa fa-check"></i>RabbitMQ</li>
+			<li><i class="fa-li fa fa-check"></i>Multi Threading</li>
+			<li><i class="fa-li fa fa-check"></i>Windows Services</li>
+			<li><i class="fa-li fa fa-check"></i>REST APIs</li>
+			<li><i class="fa-li fa fa-check"></i>HTTP</li>
+			<li><i class="fa-li fa fa-check"></i>SMTP</li>
+			<li><i class="fa-li fa fa-check"></i>HTTPS</li>
+			<li><i class="fa-li fa fa-check"></i>SIP</li>
+			<li><i class="fa-li fa fa-check"></i>VoIP</li>
+			<li><i class="fa-li fa fa-check"></i>RTP</li>
+			<li><i class="fa-li fa fa-check"></i>SDP</li>
+			<li><i class="fa-li fa fa-check"></i>RabbitMQ</li>
+			<li><i class="fa-li fa fa-check"></i>FreeSWITCH</li>
+          <!--<li class="list-inline-item">
             <i class="fab fa-html5"></i>
           </li>
           <li class="list-inline-item">
@@ -196,17 +236,47 @@
           </li>
           <li class="list-inline-item">
             <i class="fab fa-npm"></i>
-          </li>
+          </li>-->
         </ul>
+		<div class="subheading mb-3">Cloud Technologies</div>
+		<ul class="list-inline dev-icons">
+			<li class="list-inline-item">
+				AWS
+				<ul class="fa-ul mb-0" id="aws_skills">
+					<li><i class="fa-li fa fa-check"></i>EC2</li>
+					<li><i class="fa-li fa fa-check"></i>VPC</li>
+					<li><i class="fa-li fa fa-check"></i>SQS</li>
+					<li><i class="fa-li fa fa-check"></i>SNS</li>
+					<li><i class="fa-li fa fa-check"></i>SES</li>
+					<li><i class="fa-li fa fa-check"></i>IAM</li>
+					<li><i class="fa-li fa fa-check"></i>Route53</li>
+					<li><i class="fa-li fa fa-check"></i>S3</li>
+					<li><i class="fa-li fa fa-check"></i>Cloud Front</li>
+				</ul>
+			</li>
+		</ul>
+		<!--<div class="subheading mb-3">Frameworks</div>
+		<ul class="list-inline dev-icons">
+			<li class="list-inline-item">JQuery</li>
+			<li class="list-inline-item">Wireshark</li>
+		</ul>-->
+		<div class="subheading mb-3">Tools</div>
+		<!-- <ul class="list-inline dev-icons"> -->
+		<ul class="fa-ul mb-0"id="tools">
+			<li><i class="fa-li fa fa-check"></i>Wireshark</li>
+			<li><i class="fa-li fa fa-check"></i>FREB viewer</li>
+			<li><i class="fa-li fa fa-check"></i>ARC/Postman</li>
+			<li><i class="fa-li fa fa-check"></i>sngrep</li>
+		</ul>
 
         <div class="subheading mb-3">Workflow</div>
         <ul class="fa-ul mb-0">
-          <li>
+          <!--<li>
             <i class="fa-li fa fa-check"></i>
             Mobile-First, Responsive Design</li>
           <li>
             <i class="fa-li fa fa-check"></i>
-            Cross Browser Testing &amp; Debugging</li>
+            Cross Browser Testing &amp; Debugging</li>-->
           <li>
             <i class="fa-li fa fa-check"></i>
             Cross Functional Teams</li>
@@ -263,6 +333,21 @@
       </div>
     </section>
 	
+	<hr class="m-0">
+	
+	<section class="resume-section p-3 p-lg-5 d-flex align-items-center" id="projects">
+		<div class="w-100">
+			<h2 class="mb-5">Products that I'm part of</h2>
+			<div class="subheading mb-3"><a href="https://tracxn.com/d/companies/360invite.com" target="_blank">360invite</a></div>
+			<div class="subheading mb-3"><a href="https://www.smscountry.com" target="_blank">SMSCountry</a></div>
+			<div class="subheading mb-3"><a href="https://www.grptalk.com" target="_blank">grpTalk</a></div>
+			<div class="subheading mb-3"><a href="https://hub.telebu.com" target="_blank">TelebuHUB</a></div>
+			<div class="subheading mb-3"><a href="https://www.wanasatime.com" target="_blank">Wanasatime</a></div>
+			<div class="subheading mb-3"><a href="https://www.wanasatime.com" target="_blank">Cinema BH</a></div>
+			<div class="subheading mb-3"><a href="https://www.q-tickets.com/" target="_blank">QTickets</a></div>
+		</div>
+	</section>
+	<hr class="m-0">
 	<section class="resume-section p-3 p-lg-5 d-flex align-items-center" id="education">
       <div class="w-100">
         <h2 class="mb-5">Education</h2>
@@ -304,6 +389,18 @@
 
   <!-- Custom scripts for this template -->
   <script src="js/resume.min.js"></script>
+  <script type="text/javascript" language="javascript">
+	$(document).ready(function() {
+		var numitems =  $("#aws_skills li").length;
+		$("ul#aws_skills").css("column-count",Math.round(numitems/2));
+		
+		numitems =  $("#tech_stack li").length;
+		$("ul#tech_stack").css("column-count",Math.round(numitems/6));
+		
+		numitems =  $("#tools li").length;
+		$("ul#tools").css("column-count",Math.round(numitems/2));
+	});
+  </script>
 
 </body>
 
