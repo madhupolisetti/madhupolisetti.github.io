@@ -318,7 +318,7 @@ components:
       title: Avatar
     role-id:
       type: string
-      example:
+      examples:
         unite:
           value: "Admin"
         4psa:
