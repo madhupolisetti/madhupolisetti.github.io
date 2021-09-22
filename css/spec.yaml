@@ -318,13 +318,7 @@ components:
       title: Avatar
     role-id:
       type: string
-      examples:
-        unite:
-          value: "Admin"
-        4psa:
-          value: "member"
-        netsapiens:
-          value: "Basic User"
+      example: "Admin"
       description: >
         The unique identifier of the role. Possible values depend on "node
         kind":
