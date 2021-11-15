@@ -1,0 +1,70 @@
+openapi: 3.0.3
+info:
+  title: net2phone API
+  description: net2phone's public API.
+  # The real version visible to the customers is set during releases.
+  # Internal versioning is managed automatically in the "x-internalVersion" field.
+  version: internal
+  # Do not change, this is set automatically during build.
+  x-internalVersion: 0.0.0
+  license:
+    # GitHub's API uses MIT, see https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/ghes-3.0/ghes-3.0.yaml
+    name: MIT
+    url: https://spdx.org/licenses/MIT
+  termsOfService: https://app.net2phone.com/settings/termsandpolicies
+servers:
+  - url: https://api-dev.qa.n2p.io/v2
+    description: net2phone Development API Server
+  - url: https://api-qa.qa.n2p.io/v2
+    description: net2phone QA API Server
+  - url: https://api-uat.prod.n2p.io/v2
+    description: net2phone UAT API Server
+  - url: https://api-prod.prod.n2p.io/v2
+    description: net2phone Production API Server
+security:
+  - n2pOpenIdConnect: []
+tags:
+  - name: WebhookSubscription
+    description: Subscribe to call, voicemail, message events.
+  - name: User
+    description: Manage team members and their access level.
+  - name: Conversation
+    description: Manage conversations, send messages, receive events.
+  - name: CallQueue
+    description: Manage call queues.
+  - name: Audio
+    description: Manage audio files.
+paths:
+  /users:batch-get:
+    $ref: './user/users-batch-get.path.yaml'
+  /webhook-event-types:
+    $ref: './webhook-subscription/webhook-event-types.path.yaml'
+  /webhook-subscriptions:
+    $ref: './webhook-subscription/webhook-subscriptions.path.yaml'
+  /webhook-subscriptions/{webhook_subscription_id}:
+    $ref: './webhook-subscription/webhooks-subscriptions@{webhookSubscriptionId}.path.yaml'
+  /webhook-subscriptions/{webhook_subscription_id}/secret:
+    $ref: './webhook-subscription/webhooks-subscriptions@{webhookSubscriptionId}@secret.path.yaml'
+  /conversations:
+    $ref: './conversation/conversations.path.yaml'
+  /conversations/@any/messages:
+    $ref: './conversation/conversations@any@messages.path.yaml'
+  /conversations/{conversation_id}/events/{event_id}:
+    $ref: './conversation/conversations@{conversationId}@events@{eventId}.path.yaml'
+  /conversations/{conversation_id}/messages:
+    $ref: './conversation/conversations@{conversationId}@messages.path.yaml'
+  /conversations/{conversation_id}/events:
+    $ref: './conversation/conversations@{conversationId}@event.path.yaml'
+  /call-queues:
+    $ref: './call-queue/call-queues.path.yaml'
+  /call-queues/{call_queue_id}:
+    $ref: './call-queue/call-queues@{call_queue_id}.path.yaml'
+  /audio:
+    $ref: './audio/audio.path.yaml'
+  /audio/{audio_key}:
+    $ref: './audio/audio@{audio_key}.path.yaml'
+components:
+  securitySchemes:
+    n2pOpenIdConnect:
+      type: openIdConnect
+      openIdConnectUrl: https://auth.net2phone.com/.well-known/openid-configuration
