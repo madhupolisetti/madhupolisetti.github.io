@@ -3,7 +3,7 @@ info:
   title: net2phone API
   description: net2phone's public API.
   version: internal
-  x-internalVersion: spec-0.12.0
+  x-internalVersion: spec-0.13.3
   license:
     name: MIT
     url: 'https://spdx.org/licenses/MIT'
@@ -77,6 +77,52 @@ paths:
       summary: Batch get users
       x-n2p-accountBackendTypes:
         - unite
+  /users/@me:
+    get:
+      operationId: GetCurrentUser
+      description: >-
+        Gets the user object of the current logged in (who is accessing the API)
+        user.
+      x-n2p-accountBackendTypes:
+        - unite
+        - 4psa
+        - netsapiens
+      tags:
+        - User
+      responses:
+        '200':
+          description: >-
+            The user object of the current logged in user (who is accessing the
+            API).
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/user'
+                  - type: object
+                    nullable: false                
+              examples:
+                Unite:
+                  $ref: '#/components/examples/unite-user'
+                NetSapiens:
+                  $ref: '#/components/examples/netsapiens-user'
+                4psa:
+                  $ref: '#/components/examples/4psa-user'
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/rate-limit-limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/rate-limit-remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/rate-limit-reset'
+        '401':
+          $ref: '#/components/responses/authentication-error'
+        '422':
+          $ref: '#/components/responses/not-supported-error'
+        '429':
+          $ref: '#/components/responses/throttling-error'
+      summary: Get current user
+      x-n2p-throttlingQuota: 1
   /webhook-event-types:
     get:
       operationId: ListWebhookEventTypes
@@ -913,14 +959,14 @@ paths:
       x-n2p-accountBackendTypes:
         - unite
       x-n2p-throttlingQuota: 1
-  '/audio/{audio_key}':
+  '/audio/{audio_id}':
     get:
       operationId: DownloadAudio
-      description: Get audio file by Key.
+      description: Get audio file by id.
       tags:
         - Audio
       parameters:
-        - $ref: '#/components/parameters/audio-key'
+        - $ref: '#/components/parameters/audio-id'
       responses:
         '200':
           description: Direct link to audio file.
@@ -956,20 +1002,11 @@ components:
     string-id:
       type: string
       description: Unique identifier of the resource (entity) within an account.
-      example: 6gtkcdsr
+      example: '1'
       minLength: 1
-      x-n2p-comment: >
+      x-n2p-comment: >-
         Each node kind (Unite, 4PSA, NetSapiens, etc...) can interpret the
         identifier in it's own way.
-
-        For example, this is one recommended way to encode integer identifiers
-        using Crockford's Base32 encoding:
-
-        1. Convert integer to bytes using explicit endianness (big vs little
-        endian). Make sure this is machine independent.
-
-        2. Base32 encode the bytes and add a checksum character
-        (https://www.crockford.com/base32.html).
       title: StringId
     avatar-image-kind:
       type: string
@@ -1264,9 +1301,9 @@ components:
         - call_rg_queue_entered
         - call_rg_queue_tier
         - call_rg_queue_completed
-        - voice_mail_received
-        - voice_mail_notify
-        - voice_mail_missed
+        - voicemail_received
+        - voicemail_notify
+        - voicemail_missed
         - message_received
         - call_started
       x-n2p-enum:
@@ -1305,7 +1342,7 @@ components:
             name: Click-To-Call Result
           - value: call_missed
             description: >-
-              This event is triggered when an incoming call isn’t answered by
+              This event is triggered when an incoming call isnâ€™t answered by
               any user in your net2phone account.
             name: Call Missed
           - value: call_blocked
@@ -1378,18 +1415,18 @@ components:
               This event is triggered when a call in a ring group completes by
               either being answered in a tier or the caller hangs up.
             name: Call Ring Group Queue Completed
-          - value: voice_mail_received
+          - value: voicemail_received
             description: >-
               This event is triggered when an incoming call is not answered by a
               user who has enabled voice mail recording, and the caller
               successfully records a voice mail.
             name: Voicemail Received
-          - value: voice_mail_notify
+          - value: voicemail_notify
             description: >-
               This event is triggered when a user reaches the voice mail service
               (by dialing *95) to listen/manage their unread voice mails.
             name: Voicemail Notify
-          - value: voice_mail_missed
+          - value: voicemail_missed
             description: >-
               This event is triggered when an incoming call is sent to a user's
               voicemail but the caller doesn't leave a voicemail. A common
@@ -1655,56 +1692,6 @@ components:
               items:
                 $ref: '#/components/schemas/webhook-subscription'
       title: CursorPageOfWebhookSubscription
-    extension:
-      type: string
-      description: Extension number of a user in the the account.
-      pattern: '^[1-9]\d{3,4}$'
-      example: '202'
-      title: Extension
-    e164-phone-number:
-      type: string
-      description: >-
-        Phone number in E.164 international format which may include "+"
-        character.
-      pattern: '^\+?[1-9]\d{1,14}$'
-      example: '15307636905'
-      title: E164PhoneNumber
-    direction:
-      type: string
-      enum:
-        - inbound
-        - outbound
-      x-n2p-enum:
-        name: Direction
-        modelAsString: false
-        values:
-          - value: inbound
-            name: Inbound
-            description: Tells the call related to this webhook event is an incoming call.
-          - value: outbound
-            name: Outbound
-            description: Tells the call related this webhook event is an outgoing call.
-      title: Direction
-    call-source:
-      type: string
-      enum:
-        - normal
-        - click2call
-      x-n2p-enum:
-        name: CallSource
-        modelAsString: false
-        values:
-          - value: normal
-            name: Normal
-            description: >-
-              Indicates the call related to this webhook event is from
-              webapp/phone device.
-          - value: click2call
-            name: Click To Call
-            description: >-
-              Indicates the call related to this webhook event is trigger from
-              `Click to Call` API.
-      title: CallSource
     unite-user-id:
       type: integer
       description: Unique identifier of the user within an account.
@@ -1735,16 +1722,65 @@ components:
           $ref: '#/components/schemas/unite-account-id'
       additionalProperties: false
       title: WebhookTargetUser
-    webhook-target-account:
-      type: object
-      description: Describes an account related to a webhook event.
-      required:
-        - account_id
-      properties:
-        account_id:
-          $ref: '#/components/schemas/unite-account-id'
-      additionalProperties: false
-      title: WebhookTargetAccount
+    phone-extension:
+      type: string
+      pattern: '^[1-9]\d{2,3}$'
+      example: '1415'
+      title: PhoneExtension
+    e164-phone-number:
+      type: string
+      description: >-
+        Phone number in E.164 international format which may include "+"
+        character.
+      pattern: '^\+?[1-9]\d{5,14}$'
+      example: '15307636905'
+      title: E164PhoneNumber
+    pickup-feature-extension:
+      type: string
+      pattern: '^\*97[1-9]\d{2,3}$'
+      example: '*97203'
+      title: PickupFeatureExtension
+    voicemail-service-extension:
+      type: string
+      pattern: ^\*95$
+      example: '*95'
+      title: VoicemailServiceExtension
+    call-direction:
+      type: string
+      enum:
+        - inbound
+        - outbound
+      x-n2p-enum:
+        name: CallDirection
+        modelAsString: false
+        values:
+          - value: inbound
+            name: Inbound
+            description: Tells the call related to this webhook event is an incoming call.
+          - value: outbound
+            name: Outbound
+            description: Tells the call related this webhook event is an outgoing call.
+      title: CallDirection
+    call-source:
+      type: string
+      enum:
+        - normal
+        - click2call
+      x-n2p-enum:
+        name: CallSource
+        modelAsString: false
+        values:
+          - value: normal
+            name: Normal
+            description: >-
+              Indicates the call related to this webhook event is from
+              webapp/phone device.
+          - value: click2call
+            name: Click To Call
+            description: >-
+              Indicates the call related to this webhook event is trigger from
+              `Click to Call` API.
+      title: CallSource
     click-to-call-info:
       type: object
       description: >-
@@ -1757,9 +1793,11 @@ components:
         c2c_api_request_id:
           type: string
           description: The unique id the `Click to Call` API request.
+          example: 932b34fc-fb110c6bc859c542
         c2c_client_id:
           type: string
           description: The client id from which the `Click to Call` is triggered.
+          example: n2p-api
       title: ClickToCallInfo
     webhook-event-id:
       type: string
@@ -1791,38 +1829,35 @@ components:
             - direction
             - call_id
             - call_source
-            - user
           properties:
             originating_number:
               oneOf:
-                - $ref: '#/components/schemas/extension'
+                - $ref: '#/components/schemas/phone-extension'
                 - $ref: '#/components/schemas/e164-phone-number'
               description: Describes the number that started the call.
             dialed_number:
               oneOf:
-                - $ref: '#/components/schemas/extension'
+                - $ref: '#/components/schemas/phone-extension'
                 - $ref: '#/components/schemas/e164-phone-number'
+                - $ref: '#/components/schemas/pickup-feature-extension'
+                - $ref: '#/components/schemas/voicemail-service-extension'
               description: The recipient's number of the call.
             direction:
-              $ref: '#/components/schemas/direction'
+              $ref: '#/components/schemas/call-direction'
             call_id:
               type: string
               description: Unique id of the call.
               example: ce3ba63d662ff8f9455da9f954f3b472
             call_source:
               $ref: '#/components/schemas/call-source'
-            user:
-              description: The entity which is relevant to this webhook event.
-              oneOf:
-                - $ref: '#/components/schemas/webhook-target-user'
-                - $ref: '#/components/schemas/webhook-target-account'
             user_name:
               type: string
               deprecated: true
               description: >-
                 Is provided for backwards compatibility with previous versions
-                of webhooks only. **It’s strongly suggested that you avoid using
+                of webhooks only. **Itâ€™s strongly suggested that you avoid using
                 this field.**.
+              example: Jane Doe
             click_to_call_info:
               $ref: '#/components/schemas/click-to-call-info'
         - $ref: '#/components/schemas/webhook-event'
@@ -1830,57 +1865,101 @@ components:
     call-answered-event:
       allOf:
         - type: object
+          required:
+            - user
           properties:
             event:
               type: string
               enum:
                 - call_answered
+            user:
+              description: The user who answered the call.
+              allOf:
+                - $ref: '#/components/schemas/webhook-target-user'
         - $ref: '#/components/schemas/call-webhook-event'
       title: CallAnsweredEvent
     call-blind-transfer-event:
       allOf:
         - type: object
+          required:
+            - user
           properties:
             event:
               type: string
               enum:
                 - call_blind_transfer
+            user:
+              description: The user who initiated the blind tranfer of the call.
+              allOf:
+                - $ref: '#/components/schemas/webhook-target-user'
         - $ref: '#/components/schemas/call-webhook-event'
       title: CallBlindTransferEvent
+    webhook-target-account:
+      type: object
+      description: Describes an account related to a webhook event.
+      required:
+        - account_id
+      properties:
+        account_id:
+          $ref: '#/components/schemas/unite-account-id'
+      additionalProperties: false
+      title: WebhookTargetAccount
     call-blocked-event:
       allOf:
         - type: object
+          required:
+            - user
           properties:
             event:
               type: string
               enum:
                 - call_blocked
+            user:
+              oneOf:
+                - $ref: '#/components/schemas/webhook-target-user'
+                - $ref: '#/components/schemas/webhook-target-account'
+              description: >-
+                The entity which is relevant to this webhook event. If the
+                number is blocked at account level this will contain
+                `WebhookTargetAccount` schema. Otherwise
+                `WebhookEventUserSchema`.
         - $ref: '#/components/schemas/call-webhook-event'
       title: CallBlockedEvent
     call-busy-event:
       allOf:
         - type: object
+          required:
+            - user
           properties:
             event:
               type: string
               enum:
                 - call_busy
+            user:
+              description: The user whose call received a busy signal.
+              allOf:
+                - $ref: '#/components/schemas/webhook-target-user'
         - $ref: '#/components/schemas/call-webhook-event'
       title: CallBusyEvent
     duration:
       type: integer
-      description: Length of time in `seconds` of a call.
+      description: Call duration in `seconds`.
       title: Duration
     call-completed-event:
       allOf:
         - type: object
           required:
             - duration
+            - user
           properties:
             event:
               type: string
               enum:
                 - call_completed
+            user:
+              description: The user whose call is completed.
+              allOf:
+                - $ref: '#/components/schemas/webhook-target-user'
             duration:
               $ref: '#/components/schemas/duration'
             voice_mail:
@@ -1891,31 +1970,41 @@ components:
                 subscribed) for that when this is set to `true`.
         - $ref: '#/components/schemas/call-webhook-event'
       title: CallCompletedEvent
+    call-consultative-transfer-reason:
+      type: string
+      enum:
+        - transferer
+        - transferee
+      x-n2p-enum:
+        name: CallConsultativeTransferReason
+        modelAsString: false
+        values:
+          - value: transferer
+            name: Transferrer
+            description: Tells the transfer has been initiated by the caller.
+          - value: transferee
+            name: Transferee
+            description: Tells the transfer has been initiated by the callee.
+      title: CallConsultativeTransferReason
     call-consultative-transfer-event:
       allOf:
         - type: object
           required:
             - reason
+            - user
           properties:
             event:
               type: string
               enum:
                 - call_consultative_transfer
+            user:
+              description: >-
+                The user who initiated the consultative transfer (also referred
+                as warm transfer).
+              allOf:
+                - $ref: '#/components/schemas/webhook-target-user'
             reason:
-              type: string
-              enum:
-                - transferer
-                - transferee
-              x-n2p-enum:
-                name: Reason
-                modelAsString: false
-                values:
-                  - value: transferer
-                    name: Transferrer
-                    description: Tells the transfer has been initiated by the caller.
-                  - value: transferee
-                    name: Transferee
-                    description: Tells the transfer has been initiated by the callee.
+              $ref: '#/components/schemas/call-consultative-transfer-reason'
         - $ref: '#/components/schemas/call-webhook-event'
       title: CallConsultativeTransferEvent
     call-forward-event:
@@ -1923,97 +2012,146 @@ components:
         - type: object
           required:
             - forward_number
+            - user
           properties:
             event:
               type: string
               enum:
                 - call_forward
+            user:
+              description: The user whose call has been transferred.
+              allOf:
+                - $ref: '#/components/schemas/webhook-target-user'
             forward_number:
-              type: string
+              oneOf:
+                - $ref: '#/components/schemas/phone-extension'
+                - $ref: '#/components/schemas/e164-phone-number'
               description: The number to which the call has been forwarded to.
         - $ref: '#/components/schemas/call-webhook-event'
       title: CallForwardEvent
+    call-hold-reason:
+      type: string
+      enum:
+        - holder
+        - holdee
+      x-n2p-enum:
+        name: CallHoldReason
+        modelAsString: false
+        values:
+          - value: holder
+            name: Holder
+            description: Tells the hold has been initiated by the caller.
+          - value: holdee
+            name: Holdee
+            description: Tells the hold has been initiated by the callee.
+      title: CallHoldReason
     call-hold-event:
       allOf:
         - type: object
           required:
             - reason
+            - user
           properties:
             event:
               type: string
               enum:
                 - call_hold
+            user:
+              description: The user who performs the call hold operation.
+              allOf:
+                - $ref: '#/components/schemas/webhook-target-user'
             reason:
-              type: string
-              enum:
-                - holder
-                - holdee
-              x-n2p-enum:
-                name: Reason
-                modelAsString: false
-                values:
-                  - value: holder
-                    name: Holder
-                    description: Tells the hold has been initiated by the caller.
-                  - value: holdee
-                    name: Holdee
-                    description: Tells the hold has been initiated by the callee.
+              $ref: '#/components/schemas/call-hold-reason'
         - $ref: '#/components/schemas/call-webhook-event'
       title: CallHoldEvent
+    call-missed-reason:
+      type: string
+      enum:
+        - user_did_not_answer
+        - user_rejected_call
+        - call_pickup
+        - user_forward_only
+        - user_not_logged_in
+        - user_not_registered
+        - call_failed
+      x-n2p-enum:
+        name: CallMissedReason
+        modelAsString: false
+        values:
+          - value: user_did_not_answer
+            name: User Did Not Answer
+            description: The user did not answer the call.
+          - value: user_rejected_call
+            name: User Rejected Call
+            description: The user explicitly rejected the call.
+          - value: call_pickup
+            name: Call Pickup
+            description: Another user picked the call.
+          - value: call_forward_only
+            name: Call Forward Only
+            description: Call has been forwarded to another number.
+          - value: user_not_logged_in
+            name: User Not Logged In
+            description: User is not logged into the app.
+          - value: user_not_registered
+            name: User Not Registered
+            description: User's extension is not registered in the call server.
+          - value: call_failed
+            name: Call Failed
+            description: The call has been failed with an unexpected cause.
+      title: CallMissedReason
     call-missed-event:
       allOf:
         - type: object
           required:
             - duration
             - reason
+            - user
           properties:
             event:
               type: string
               enum:
                 - call_missed
+            user:
+              description: The user who missed the call.
+              allOf:
+                - $ref: '#/components/schemas/webhook-target-user'
             duration:
               type: integer
               description: Always `0` for missed calls.
             reason:
-              type: string
-              enum:
-                - user_did_not_answer
-                - user_rejected_call
-                - call_pickup
-              x-n2p-enum:
-                name: Reason
-                modelAsString: false
-                values:
-                  - value: user_did_not_answer
-                    name: User Did Not Answer
-                    description: The user did not answer the call.
-                  - value: user_rejected_call
-                    name: User Rejected Call
-                    description: The user explicitly rejected the call.
-                  - value: call_pickup
-                    name: Call Pickup
-                    description: Another user picked the call.
+              $ref: '#/components/schemas/call-missed-reason'
         - $ref: '#/components/schemas/call-webhook-event'
       title: CallMissedEvent
+    slot:
+      type: string
+      example: '2'
+      description: The slot number of the parked call.
+      title: Slot
     call-park-event:
       allOf:
         - type: object
           required:
             - slot
+            - user
           properties:
             event:
               type: string
               enum:
                 - call_park
             slot:
-              type: string
-              example: '2'
               description: >-
                 The slot number of the parked call. You should use this slot
-                number to retrive (unpark) the call later.
+                number to retrieve (unpark) the call later.
+              allOf:
+                - $ref: '#/components/schemas/slot'
+            user:
+              description: The user who parked the call.
+              allOf:
+                - $ref: '#/components/schemas/webhook-target-user'
         - $ref: '#/components/schemas/call-webhook-event'
       title: CallParkEvent
-    pickup-event-info:
+    call-pickup-user:
       type: object
       description: Describes the user details of whose call has been picked up.
       required:
@@ -2026,27 +2164,32 @@ components:
         name:
           type: string
         extension:
-          type: string
+          $ref: '#/components/schemas/phone-extension'
       example:
         id: 986308
         name: Lazy user
         extension: '203'
-      title: PickupEventInfo
+      title: CallPickupUser
     call-pickup-event:
       allOf:
         - type: object
           required:
             - pickup_event_info
+            - user
           properties:
             event:
               type: string
               enum:
                 - call_pickup
+            user:
+              description: The user who used the pickup feature.
+              allOf:
+                - $ref: '#/components/schemas/webhook-target-user'
             pickup_event_info:
-              $ref: '#/components/schemas/pickup-event-info'
+              $ref: '#/components/schemas/call-pickup-user'
         - $ref: '#/components/schemas/call-webhook-event'
       title: CallPickupEvent
-    audio-message:
+    call-webhook-event-audio-fields:
       type: object
       required:
         - audio_message_id
@@ -2058,60 +2201,88 @@ components:
         audio_message_url:
           type: string
           format: uri
-          description: Url to access the audio message of a call recording or voicemail.
-      title: AudioMessage
+          description: >-
+            Url to download the audio file of a call recording or voicemail. The
+            URL needs authentication like any other API resource.
+      title: CallWebhookEventAudioFields
     call-recorded-event:
       allOf:
         - type: object
+          required:
+            - user
           properties:
             event:
               type: string
               enum:
                 - call_recorded
+            user:
+              description: The user whose call has been recorded.
+              allOf:
+                - $ref: '#/components/schemas/webhook-target-user'
         - $ref: '#/components/schemas/call-webhook-event'
-        - $ref: '#/components/schemas/audio-message'
+        - $ref: '#/components/schemas/call-webhook-event-audio-fields'
       title: CallRecordedEvent
     call-recording-failed-event:
       allOf:
         - type: object
+          required:
+            - user
           properties:
             event:
               type: string
               enum:
                 - call_recording_failed
+            user:
+              description: The user whos call has failed to record.
+              allOf:
+                - $ref: '#/components/schemas/webhook-target-user'
             reason:
               type: string
               description: >-
                 The reason for recording failure. The most common reason is
                 `maxCallRecordings` (Maximum recordings has been hit).
+              x-n2p-comment: >-
+                The link
+                (https://idtjira.atlassian.net/wiki/spaces/NET/pages/567739272/Public+Webhook+Events)
+                in confluence says, there can be other reasons which are
+                undocumented. This is the reason to make this a free-form string
+                instead of an enum.
         - $ref: '#/components/schemas/call-webhook-event'
       title: CallRecordingFailedEvent
+    call-resume-reason:
+      type: string
+      enum:
+        - resumer
+        - resumee
+      x-n2p-enum:
+        name: CallResumeReason
+        modelAsString: false
+        values:
+          - value: resumer
+            name: Resumer
+            description: Tells the call has been resumed by the caller.
+          - value: resumee
+            name: Resumee
+            description: Tells the call has been resumed by the callee.
+      title: CallResumeReason
     call-resume-event:
       allOf:
         - type: object
           required:
             - reason
             - hold_duration
+            - user
           properties:
             event:
               type: string
               enum:
                 - call_resume
+            user:
+              description: The user who resumed the call from a `hold` state.
+              allOf:
+                - $ref: '#/components/schemas/webhook-target-user'
             reason:
-              type: string
-              enum:
-                - resumer
-                - resumee
-              x-n2p-enum:
-                name: Reason
-                modelAsString: false
-                values:
-                  - value: resumer
-                    name: Resumer
-                    description: Tells the call has been resumed by the caller.
-                  - value: resumee
-                    name: Resumee
-                    description: Tells the call has been resumed by the callee.
+              $ref: '#/components/schemas/call-resume-reason'
             hold_duration:
               type: integer
               description: >-
@@ -2122,41 +2293,59 @@ components:
     call-rg-queue-completed-event:
       allOf:
         - type: object
+          required:
+            - user
           properties:
             event:
               type: string
               enum:
                 - call_rg_queue_completed
+            user:
+              $ref: '#/components/schemas/webhook-target-account'
         - $ref: '#/components/schemas/call-webhook-event'
       title: CallRgQueueCompletedEvent
     call-rg-queue-entered-event:
       allOf:
         - type: object
+          required:
+            - user
           properties:
             event:
               type: string
               enum:
                 - call_rg_queue_entered
+            user:
+              $ref: '#/components/schemas/webhook-target-account'
         - $ref: '#/components/schemas/call-webhook-event'
       title: CallRgQueueEnteredEvent
     call-rg-queue-tier-event:
       allOf:
         - type: object
+          required:
+            - user
           properties:
             event:
               type: string
               enum:
                 - call_rg_queue_tier
+            user:
+              $ref: '#/components/schemas/webhook-target-account'
         - $ref: '#/components/schemas/call-webhook-event'
       title: CallRgQueueTierEvent
     call-ringing-event:
       allOf:
         - type: object
+          required:
+            - user
           properties:
             event:
               type: string
               enum:
                 - call_ringing
+            user:
+              description: The user whose call is ringing.
+              allOf:
+                - $ref: '#/components/schemas/webhook-target-user'
         - $ref: '#/components/schemas/call-webhook-event'
       title: CallRingingEvent
     call-unpark-event:
@@ -2164,26 +2353,38 @@ components:
         - type: object
           required:
             - slot
+            - user
           properties:
             event:
               type: string
               enum:
                 - call_unpark
             slot:
-              type: string
               description: >-
                 The slot number (received from `call_park` event) from which the
                 call has been unparked.
+              allOf:
+                - $ref: '#/components/schemas/slot'
+            user:
+              description: The user who unparked a call from a parking slot.
+              allOf:
+                - $ref: '#/components/schemas/webhook-target-user'
         - $ref: '#/components/schemas/call-webhook-event'
       title: CallUnparkEvent
     emergency-call-event:
       allOf:
         - type: object
+          required:
+            - user
           properties:
             event:
               type: string
               enum:
                 - emergency_call
+            user:
+              description: The user who is availing emergency service.
+              allOf:
+                - $ref: '#/components/schemas/webhook-target-user'
         - $ref: '#/components/schemas/call-webhook-event'
       title: EmergencyCallEvent
     messenger-uuid:
@@ -2344,55 +2545,70 @@ components:
                 - $ref: '#/components/schemas/webhook-target-account'
         - $ref: '#/components/schemas/webhook-event'
       title: MessageReceivedEvent
+    voicemail-missed-reason:
+      type: string
+      enum:
+        - caller_hungup
+        - vm_disabled
+        - mailbox_full
+        - transcode_error
+        - copy_error
+      x-n2p-enum:
+        name: VoicemailMissedReason
+        modelAsString: false
+        values:
+          - value: caller_hungup
+            name: Caller Hungup
+            description: >-
+              The caller hungup the call before recording the voice mail (before
+              the beep sound).
+          - value: vm_disabled
+            name: VM Disabled
+            description: The voice mail feature has been disabled for the user.
+          - value: mailbox_full
+            name: Mailbox Full
+            description: The user's mail box is full.
+          - value: transcode_error
+            name: Trancode Error
+            description: There is a transcoding error occured in the platform.
+          - value: copy_error
+            name: Copy Error
+            description: Platform error.
+      title: VoicemailMissedReason
     voicemail-missed-event:
       allOf:
         - type: object
+          required:
+            - user
           properties:
             event:
               type: string
               enum:
                 - voicemail_missed
+            user:
+              description: The user who missed a voice mail.
+              allOf:
+                - $ref: '#/components/schemas/webhook-target-user'
             duration:
               type: integer
             reason:
-              type: string
-              enum:
-                - caller_hungup
-                - vm_disabled
-                - mailbox_full
-                - transcode_error
-                - copy_error
-              x-n2p-enum:
-                name: Reason
-                modelAsString: false
-                values:
-                  - value: caller_hungup
-                    name: Caller Hungup
-                    description: >-
-                      The caller hungup the call before recording the voice mail
-                      (before the beep sound).
-                  - value: vm_disabled
-                    name: VM Disabled
-                    description: The voice mail feature has been disabled for the user.
-                  - value: mailbox_full
-                    name: Mailbox Full
-                    description: The user's mail box is full.
-                  - value: transcode_error
-                    name: Trancode Error
-                    description: There is a transcoding error occured in the platform.
-                  - value: copy_error
-                    name: Copy Error
-                    description: Platform error.
+              $ref: '#/components/schemas/voicemail-missed-reason'
         - $ref: '#/components/schemas/call-webhook-event'
       title: VoicemailMissedEvent
     voicemail-notify-event:
       allOf:
         - type: object
+          required:
+            - user
           properties:
             event:
               type: string
               enum:
                 - voicemail_notify
+            user:
+              description: The user who reached the voicemail service.
+              allOf:
+                - $ref: '#/components/schemas/webhook-target-user'
             voicemail:
               type: boolean
         - $ref: '#/components/schemas/call-webhook-event'
@@ -2402,18 +2618,27 @@ components:
         - type: object
           required:
             - duration
-            - voice_mail
+            - voicemail
+            - user
           properties:
             event:
               type: string
               enum:
                 - voicemail_received
+            user:
+              oneOf:
+                - $ref: '#/components/schemas/webhook-target-user'
+                - $ref: '#/components/schemas/webhook-target-account'
+              description: >-
+                The entity which is relevant to this webhook event. If the
+                voicemail is for a specific user, this will contain
+                `WebhookTargetUser` schema. Otherwise `WebhookAccountSchema`.
             duration:
               $ref: '#/components/schemas/duration'
-            voice_mail:
+            voicemail:
               type: boolean
         - $ref: '#/components/schemas/call-webhook-event'
-        - $ref: '#/components/schemas/audio-message'
+        - $ref: '#/components/schemas/call-webhook-event-audio-fields'
       title: VoicemailReceivedEvent
     update-webhook-subscription-command:
       allOf:
@@ -2591,11 +2816,6 @@ components:
         extension:
           $ref: '#/components/schemas/phone-extension'
       title: PhoneExtensionContactMethod
-    phone-extension:
-      type: string
-      pattern: '^[1-9]\d{2,3}$'
-      example: '1415'
-      title: PhoneExtension
     contact-method:
       oneOf:
         - $ref: '#/components/schemas/phone-number-contact-method'
@@ -2733,19 +2953,6 @@ components:
         - max_wait_time_seconds
         - ring_strategy
       title: CallQueueCommon
-    user-audit-fields:
-      type: object
-      properties:
-        created_by:
-          allOf:
-            - type: object
-              nullable: false
-            - $ref: '#/components/schemas/user'
-        updated_by:
-          $ref: '#/components/schemas/user'
-      required:
-        - created_by
-      title: UserAuditFields
     call-queue:
       allOf:
         - $ref: '#/components/schemas/call-queue-reference'
@@ -2757,7 +2964,7 @@ components:
           required:
             - agents_count
         - $ref: '#/components/schemas/timestamp-audit-fields'
-        - $ref: '#/components/schemas/user-audit-fields'
+        - $ref: '#/components/schemas/user-audit-fields-optional'
       title: CallQueue
     cursor-page-of-call-queue:
       allOf:
@@ -2772,104 +2979,112 @@ components:
                 $ref: '#/components/schemas/call-queue'
       title: CursorPageOfCallQueue
     call-queue-agent:
-      allOf:
-        - type: object
-          properties:
-            logged_in:
-              type: boolean
-            user:
-              $ref: '#/components/schemas/user-reference'
-          required:
-            - logged_in
-            - user
-      title: CallQueueAgent
-    call-queue-failover-action:
       type: object
-      discriminator:
-        propertyName: type
-        mapping:
-          none: '#/components/schemas/call-queue-failover-action-none'
-          forward: '#/components/schemas/call-queue-failover-action-forward'
-          hangup: '#/components/schemas/call-queue-failover-action-hangup'
       properties:
-        type:
-          $ref: '#/components/schemas/call-queue-failover-action-type'
+        logged_in:
+          type: boolean
+        user:
+          $ref: '#/components/schemas/user-reference'
+      required:
+        - logged_in
+        - user
+      title: CallQueueAgent
+    call-queue-failover-action-none:
+      type: object
       required:
         - type
-      title: CallQueueFailoverAction
-    call-queue-failover-action-none:
-      allOf:
-        - $ref: '#/components/schemas/call-queue-failover-action'
+      properties:
+        type:
+          type: string
       example:
         type: none
       title: CallQueueFailoverActionNone
-    call-queue-failover-destination:
+    call-queue-failover-destination-entity:
       type: object
-      discriminator:
-        propertyName: type
-        mapping:
-          user: '#/components/schemas/call-queue-failover-destination-with-voicemail'
-          welcome_menu: '#/components/schemas/call-queue-failover-destination'
-          call_queue: '#/components/schemas/call-queue-failover-destination'
-          department: '#/components/schemas/call-queue-failover-destination-with-voicemail'
-          ring_group: '#/components/schemas/call-queue-failover-destination'
       properties:
         id:
           $ref: '#/components/schemas/string-id'
         type:
-          $ref: '#/components/schemas/call-queue-failover-destination-type'
+          type: string
       required:
         - id
         - type
-      title: CallQueueFailoverDestination
-    call-queue-failover-destination-with-voicemail:
+      title: CallQueueFailoverDestinationEntity
+    call-queue-failover-destination-user:
       allOf:
-        - $ref: '#/components/schemas/call-queue-failover-destination'
+        - $ref: '#/components/schemas/call-queue-failover-destination-entity'
         - type: object
           properties:
             voicemail:
               type: boolean
               description: Forward to voicemail.
               default: false
-      title: CallQueueFailoverDestinationWithVoicemail
-    call-queue-failover-destination-type:
-      type: string
-      description: Call queue failover destination type.
-      enum:
-        - user
-        - welcome_menu
-        - call_queue
-        - department
-        - ring_group
-      x-n2p-enum:
-        name: CallQueueFailoverDestinationType
-        modelAsString: false
-        values:
-          - value: user
-            description: Failover to user.
-            name: User
-          - value: welcome_menu
-            description: Failover to welcome menu.
-            name: Welcome Menu
-          - value: call_queue
-            description: Failover to another call queue.
-            name: Call Queue
-          - value: department
-            description: Failover to department
-            name: Department
-          - value: ring_group
-            description: Failover to ring group
-            name: Ring Group
-      title: CallQueueFailoverDestinationType
-    call-queue-failover-action-forward:
+      example:
+        id: '399302'
+        type: ring_group
+        voicemail: true
+      title: CallQueueFailoverDestinationUser
+    call-queue-failover-destination-welcome-menu:
       allOf:
-        - $ref: '#/components/schemas/call-queue-failover-action'
+        - $ref: '#/components/schemas/call-queue-failover-destination-entity'
+      example:
+        id: '399302'
+        type: welcome_menu
+      title: CallQueueFailoverDestinationWelcomeMenu
+    call-queue-failover-destination-call-queue:
+      allOf:
+        - $ref: '#/components/schemas/call-queue-failover-destination-entity'
+      example:
+        id: '399302'
+        type: call_queue
+      title: CallQueueFailoverDestinationCallQueue
+    call-queue-failover-destination-department:
+      allOf:
+        - $ref: '#/components/schemas/call-queue-failover-destination-entity'
         - type: object
-          required:
-            - destination
           properties:
-            destination:
-              $ref: '#/components/schemas/call-queue-failover-destination'
+            voicemail:
+              type: boolean
+              description: Forward to voicemail.
+              default: false
+      example:
+        id: '399302'
+        type: ring_group
+        voicemail: true
+      title: CallQueueFailoverDestinationDepartment
+    call-queue-failover-destination-ring-group:
+      allOf:
+        - $ref: '#/components/schemas/call-queue-failover-destination-entity'
+      example:
+        id: '399302'
+        type: ring_group
+      title: CallQueueFailoverDestinationRingGroup
+    call-queue-failover-destination:
+      oneOf:
+        - $ref: '#/components/schemas/call-queue-failover-destination-user'
+        - $ref: '#/components/schemas/call-queue-failover-destination-department'
+        - $ref: '#/components/schemas/call-queue-failover-destination-call-queue'
+        - $ref: '#/components/schemas/call-queue-failover-destination-welcome-menu'
+        - $ref: '#/components/schemas/call-queue-failover-destination-ring-group'
+      discriminator:
+        propertyName: type
+        mapping:
+          user: '#/components/schemas/call-queue-failover-destination-user'
+          welcome_menu: '#/components/schemas/call-queue-failover-destination-welcome-menu'
+          call_queue: '#/components/schemas/call-queue-failover-destination-call-queue'
+          department: '#/components/schemas/call-queue-failover-destination-department'
+          ring_group: '#/components/schemas/call-queue-failover-destination-ring-group'
+      title: CallQueueFailoverDestination
+    call-queue-failover-action-forward:
+      type: object
+      required:
+        - destination
+        - type
+      properties:
+        destination:
+          $ref: '#/components/schemas/call-queue-failover-destination'
+        type:
+          type: string
       example:
         type: forward
         destination:
@@ -2877,85 +3092,182 @@ components:
           type: user
       title: CallQueueFailoverActionForward
     call-queue-failover-action-hangup:
-      allOf:
-        - $ref: '#/components/schemas/call-queue-failover-action'
+      type: object
+      required:
+        - type
+      properties:
+        type:
+          type: string
       example:
         type: hangup
       title: CallQueueFailoverActionHangup
-    call-queue-failover-action-type:
-      type: string
-      description: Call queue failover action.
-      enum:
-        - none
-        - forward
-        - hangup
-      x-n2p-enum:
-        name: CallQueueFailoverAction
-        modelAsString: false
-        values:
-          - value: none
-            description: Do nothing.
-            name: None
-          - value: forward
-            description: Forward call.
-            name: Forward
-          - value: hangup
-            description: Hangup call.
-            name: Hangup
-      title: CallQueueFailoverActionType
+    call-queue-failover-action:
+      oneOf:
+        - $ref: '#/components/schemas/call-queue-failover-action-none'
+        - $ref: '#/components/schemas/call-queue-failover-action-forward'
+        - $ref: '#/components/schemas/call-queue-failover-action-hangup'
+      discriminator:
+        propertyName: type
+        mapping:
+          none: '#/components/schemas/call-queue-failover-action-none'
+          forward: '#/components/schemas/call-queue-failover-action-forward'
+          hangup: '#/components/schemas/call-queue-failover-action-hangup'
+      description: Failover action configuration.
+      title: CallQueueFailoverAction
+    call-queue-default-audio-reference:
+      type: object
+      required:
+        - type
+      properties:
+        type:
+          type: string
+        id:
+          description: Use DownloadAudio endpoint to get the audio.
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/string-id'
+      example:
+        type: CallQueueCustomAudioReference
+        id: c4aac21b-542c-4707-814e-8fad5b9b939b
+      title: CallQueueDefaultAudioReference
+    call-queue-custom-audio-reference:
+      type: object
+      required:
+        - type
+        - id
+      properties:
+        type:
+          type: string
+        id:
+          description: Use DownloadAudio endpoint to get the audio.
+          allOf:
+            - $ref: '#/components/schemas/string-id'
+      example:
+        type: CallQueueDefaultAudioReference
+        id: c4aac21b-542c-4707-814e-8fad5b9b939b
+      title: CallQueueCustomAudioReference
+    call-queue-audio-reference:
+      oneOf:
+        - $ref: '#/components/schemas/call-queue-default-audio-reference'
+        - $ref: '#/components/schemas/call-queue-custom-audio-reference'
+      discriminator:
+        propertyName: type
+        mapping:
+          CallQueueDefaultAudioReference: '#/components/schemas/call-queue-default-audio-reference'
+          CallQueueCustomAudioReference: '#/components/schemas/call-queue-custom-audio-reference'
+      example:
+        type: CallQueueDefaultAudioReference
+        id: c4aac21b-542c-4707-814e-8fad5b9b939b
+      title: CallQueueAudioReference
+    call-queue-announcement-settings:
+      type: object
+      description: >-
+        Announcement is an audio to be played for the caller in the call queue
+        after some events happen. |
+
+        'primary_audio': Played first after delay when caller entered the call
+        queue, delay is primary_audio_delay_seconds. |
+
+        'secondary_audio': Played after the primery audio without delay.
+      required:
+        - primary_audio
+        - secondary_audio
+        - primary_audio_delay_seconds
+      properties:
+        primary_audio:
+          $ref: '#/components/schemas/call-queue-audio-reference'
+        secondary_audio:
+          $ref: '#/components/schemas/call-queue-audio-reference'
+        primary_audio_delay_seconds:
+          description: The time when primary audio is played.
+          type: integer
+          minimum: 0
+          maximum: 600
+      title: CallQueueAnnouncementSettings
     create-call-queue-command:
       allOf:
         - $ref: '#/components/schemas/call-queue-common'
         - type: object
+          description: >-
+            'max_limit_reached_action': Action to perform when queue reached its
+            max capacity or max waiting time. No action by default. |
+
+            'no_agents_action': Action to perform when no agents logged in. No
+            action by default. |
+
+            'welcome_greeting_audio': An audio which caller hears when entering
+            the call queue. |
+
+            'on_hold_audio': An audio which caller hears when waiting in the
+            call queue. |
+
+            'announcement_settings': Announcement audio settins.
           properties:
             agents:
               type: array
               items:
                 $ref: '#/components/schemas/call-queue-agent'
-            failover_action:
-              allOf:
-                - $ref: '#/components/schemas/call-queue-failover-action'
-                - description: >-
-                    Action to perform when queue reached its max capacity or max
-                    waiting time. No action by default.
+            max_limit_reached_action:
+              $ref: '#/components/schemas/call-queue-failover-action'
             no_agents_action:
-              allOf:
-                - $ref: '#/components/schemas/call-queue-failover-action'
-                - description: >-
-                    Action to perform when no agents logged in. No action by
-                    default.
+              $ref: '#/components/schemas/call-queue-failover-action'
+            welcome_greeting_audio:
+              $ref: '#/components/schemas/call-queue-audio-reference'
+            on_hold_audio:
+              $ref: '#/components/schemas/call-queue-audio-reference'
+            announcement_settings:
+              $ref: '#/components/schemas/call-queue-announcement-settings'
       title: CreateCallQueueCommand
     call-queue-agent-details:
-      allOf:
-        - type: object
-          properties:
-            user:
-              $ref: '#/components/schemas/user'
-        - $ref: '#/components/schemas/call-queue-agent'
+      type: object
+      properties:
+        logged_in:
+          type: boolean
+        user:
+          $ref: '#/components/schemas/user'
+      required:
+        - logged_in
+        - user
       title: CallQueueAgentDetails
     call-queue-details:
       allOf:
         - $ref: '#/components/schemas/call-queue'
         - type: object
+          description: >-
+            'max_limit_reached_action': Action to perform when queue reached its
+            max capacity or max waiting time. |
+
+            'no_agents_action': Action to perform when no agents logged in. |
+
+            'welcome_greeting_audio': An audio which caller hears when entering
+            the call queue. |
+
+            'on_hold_audio': An audio which caller hears when waiting in the
+            call queue. |
+
+            'announcement_settings': Announcement audio settins.
           properties:
             agents:
               type: array
               items:
                 $ref: '#/components/schemas/call-queue-agent-details'
-            failover_action:
-              allOf:
-                - $ref: '#/components/schemas/call-queue-failover-action'
-                - description: >-
-                    Action to perform when queue reached its max capacity or max
-                    waiting time.
+            max_limit_reached_action:
+              $ref: '#/components/schemas/call-queue-failover-action'
             no_agents_action:
-              allOf:
-                - $ref: '#/components/schemas/call-queue-failover-action'
-                - description: Action to perform when no agents logged in.
+              $ref: '#/components/schemas/call-queue-failover-action'
+            welcome_greeting_audio:
+              $ref: '#/components/schemas/call-queue-audio-reference'
+            on_hold_audio:
+              $ref: '#/components/schemas/call-queue-audio-reference'
+            announcement_settings:
+              $ref: '#/components/schemas/call-queue-announcement-settings'
           required:
             - agents
-            - failover_action
+            - max_limit_reached_action
             - no_agents_action
+            - welcome_greeting_audio
+            - on_hold_audio
+            - announcement_settings
       title: CallQueueDetails
     create-audio-command:
       type: object
@@ -2971,7 +3283,7 @@ components:
       properties:
         url:
           type: string
-        key:
+        id:
           type: string
       title: Audio
     throttling-error:
@@ -3162,119 +3474,65 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/throttling-error'
-  parameters:
-    limit:
-      name: limit
-      in: query
-      description: Number of items per page.
-      schema:
-        type: integer
-        format: int32
-        default: 10
-        minimum: 1
-        maximum: 100
-    before:
-      name: before
-      in: query
-      description: >-
-        The opaque cursor to paginate backwards. Cannot be used together with
-        `after`.
-      schema:
-        type: string
-        example: eyJrIjoiRkM5RDhDQTktRkZCMy00REEzLTg1MEQtNkQ3Nzk5QTMzMTlFIn0=
-    after:
-      name: after
-      in: query
-      description: >-
-        The opaque cursor to paginate forwards. Cannot be used together with
-        `before`.
-      schema:
-        type: string
-        example: eyJrIjoiRkM5RDhDQTktRkZCMy00REEzLTg1MEQtNkQ3Nzk5QTMzMTlFIn0=
-    webhook-signature:
-      name: x-net2phone-signature
-      in: header
-      required: false
-      x-n2p-accountBackendTypes:
-        - unite
-      description: >-
-        Used to make sure the webhook request is authentic and comes from
-        net2phone. To validate the signature:
-
-        1. Retrieve the raw body of the webhook request.
-
-        2. Concatentate two parts using the `:` character. The resulting string
-        should looke like `{signature}:{raw_body}`.
-
-        3. Compute the HMAC-SHA256 hash from the given string. Use the
-        `x-net2phone-timestamp` header as the key. All "string to bytes"
-        conversions should be performed using UTF-8 encoding.
-
-        4. Convert the resulting HMAC-SHA256 hash bytes back to a string using
-        HEX encoding (without `-` characters).
-
-        5. Compare the resulting string with the value present in the
-        `x-net2phone-signature` header. If they are equal, the request is
-        authentic.
-
-
-        See [support
-        article](https://support.net2phone.com/s/article/Securing-net2phone-webhook-requests-to-your-application)
-        for more information.
-      schema:
-        type: string
-        example: fe4aad021345e9c6506e163ba62aea8a0f15047712618482a2423cc008dd2fb2
-    webhook-timestamp:
-      name: x-net2phone-timestamp
-      in: header
-      required: false
-      description: >-
-        The timestamp of the request. Used to validate the authenticity of the
-        webhook request in combination with `x-net2phone-signature` header.
-      x-n2p-accountBackendTypes:
-        - unite
-      schema:
-        type: string
-        format: date-time
-        example: 2021-09-17T09:13:08.912Z
-    webhook-subscription-id:
-      name: webhook_subscription_id
-      in: path
-      required: true
-      description: The unique id of the webhook subscription within account.
-      schema:
-        $ref: '#/components/schemas/string-id'
-    conversation-id:
-      name: conversation_id
-      in: path
-      required: true
-      description: The unique id of the conversation.
-      schema:
-        $ref: '#/components/schemas/conversation-id'
-    event-id:
-      name: event_id
-      in: path
-      required: true
-      description: Unique identifier of the event.
-      schema:
-        $ref: '#/components/schemas/conversation-event-id'
-    call-queue-id:
-      name: call_queue_id
-      in: path
-      required: true
-      description: The unique id of the call queue within account.
-      schema:
-        $ref: '#/components/schemas/string-id'
-      example: '10293993'
-    audio-key:
-      name: audio_key
-      in: path
-      required: true
-      description: The unique key for audio file.
-      schema:
-        $ref: '#/components/schemas/string-id'
-      example: c4aac21b-542c-4707-814e-8fad5b9b939b
   examples:
+    unite-user:
+      summary: User in Unite account.
+      x-n2p-accountBackendTypes:
+        - unite
+      value:
+        id: '1'
+        first_name: Jane
+        last_name: Doe
+        email: jane.doe@example.com
+        avatar:
+          user_id: '1'
+          avatar_images:
+            - url: >-
+                https://n2p-messaging-prod-storage.s3.us-east-1.amazonaws.com/606b0115e42d950001d25230-1630558234076-120px.jpg
+              size_pixels: 120
+              kind: resized
+            - url: >-
+                https://n2p-messaging-prod-storage.s3.us-east-1.amazonaws.com/606b0115e42d950001d25230-1630558234076-200px.jpg
+              size_pixels: 200
+              kind: resized
+            - url: >-
+                https://n2p-messaging-prod-storage.s3.us-east-1.amazonaws.com/606b0115e42d950001d25230-1630558234076-224px.jpg
+              size_pixels: 224
+              kind: resized
+            - url: >-
+                https://n2p-messaging-prod-storage.s3.us-east-1.amazonaws.com/606b0115e42d950001d25230-1630558234076-400px.jpg
+              size_pixels: 400
+              kind: resized
+            - url: >-
+                https://n2p-messaging-prod-storage.s3.us-east-1.amazonaws.com/606b0115e42d950001d25230-1630558234076.jpg
+              kind: original
+        role:
+          id: Regular
+          display_name: Regular User
+    netsapiens-user:
+      summary: User in netsapiens account.
+      x-n2p-accountBackendTypes:
+        - netsapiens
+      value:
+        id: 123@domain
+        first_name: Jane
+        last_name: Doe
+        email: jane.doe@example.com
+        role:
+          id: Office Manager
+          display_name: Office Manager
+    4psa-user:
+      summary: User in 4psa account.
+      x-n2p-accountBackendTypes:
+        - 4psa
+      value:
+        id: '1000560'
+        first_name: Jane
+        last_name: Doe
+        email: jane.doe@example.com
+        role:
+          id: member
+          display_name: Member
     unite-webhook-subscription-request:
       summary: User-scoped webhook in Unite account.
       x-n2p-accountBackendTypes:
@@ -3429,6 +3687,697 @@ components:
               role:
                 id: member
                 display_name: member
+    normal-call-answered:
+      summary: Normal call answered by a user.
+      value:
+        id: 9780e8d6-81a5-43a7-8a70-af6935d49bc5
+        event: call_answered
+        timestamp: '2021-11-10T11:33:38.85Z'
+        direction: outbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '2011'
+        dialed_number: '2021'
+        call_id: 03f592fc18f3efbf688eb059703a4e10
+        call_source: normal
+    c2c-call-answered:
+      summary: Click to Call answered by a user.
+      value:
+        id: 9780e8d6-81a5-43a7-8a70-af6935d49bc5
+        event: call_answered
+        timestamp: '2021-11-10T11:33:38.85Z'
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        direction: outbound
+        user_name: Jane Doe
+        originating_number: '+19739331434'
+        dialed_number: '+15162890533'
+        call_id: 03f592fc18f3efbf688eb059703a4e10
+        call_source: click2call
+        click_to_call_info:
+          c2c_api_request_id: 4fe62e9-4a935b5eb4aeae47
+          c2c_client_id: n2p-api
+    normal-call-blind-transfer:
+      summary: Blind transfer a normal call to another user
+      value:
+        id: 6ba4acac-8298-4bc7-a6c4-eb6d6dbe1707
+        event: call_blind_transfer
+        timestamp: '2021-11-16T04:53:26.86Z'
+        direction: inbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '+19739331434'
+        dialed_number: '+15162890533'
+        call_id: b37b0f94710e756f7ba2bf529eedbf64
+        call_source: normal
+    c2c-blind-transfer:
+      summary: >-
+        Blind transfer a call (triggered via click to cal API) to another
+        user/department/ring group/welcome menu.
+      value:
+        id: 0ae648e6-7fbe-44ec-9289-f85c4f54c445
+        event: call_blind_transfer
+        timestamp: '2021-11-16T01:28:55.65Z'
+        direction: outbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        originating_number: '+19739331434'
+        dialed_number: '+15162890533'
+        call_id: 3b4ddffc082daed9ed0c055850b4a23e
+        call_source: click2call
+        click_to_call_info:
+          c2c_api_request_id: 4fe62e9-4a935b5eb4aeae47
+          c2c_client_id: n2p-api
+    call-blocked-account-level:
+      summary: Number blocked at account level.
+      value:
+        id: 95c2448f-b178-4114-8517-9b07cbecc566
+        event: call_blocked
+        timestamp: '2021-11-08T11:43:32.41Z'
+        direction: inbound
+        user:
+          account_id: 42
+        originating_number: '+17323856855'
+        dialed_number: '+18622290803'
+        call_id: e29d0da649fc861d302ce362471fcded
+        call_source: normal
+    call-blocked-user-level:
+      summary: Number blocked at user level.
+      value:
+        id: 867f1b4e-ad1b-42a3-9356-dafd1f04d4ce
+        event: call_blocked
+        timestamp: '2021-11-15T07:04:24.31Z'
+        direction: inbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        originating_number: '+17323856855'
+        dialed_number: '+18622290803'
+        call_id: 9bdb266d73f7c40f9458594fe1e18f68
+        call_source: normal
+    normal-call-busy:
+      summary: Call busy for a normal call
+      value:
+        id: 6ef98e35-2220-45d4-b76a-a8e15ba4ab3e
+        event: call_busy
+        timestamp: '2021-10-27T08:58:21.66Z'
+        direction: outbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '+14432528753'
+        dialed_number: '+14432528752'
+        call_id: a471d33e562b535b9ec530e1c0c3a5b2
+        call_source: normal
+    c2c-call-busy:
+      summary: Call busy for a click to call
+      value:
+        id: 6ef98e35-2220-45d4-b76a-a8e15ba4ab3e
+        event: call_busy
+        timestamp: '2021-10-27T08:58:21.66Z'
+        direction: outbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '+14432528753'
+        dialed_number: '+14432528752'
+        call_id: a471d33e562b535b9ec530e1c0c3a5b2
+        call_source: click2call
+        click_to_call_info:
+          c2c_api_request_id: 4fe62e9-4a935b5eb4aeae47
+          c2c_client_id: n2p-api
+    normal-call-completed:
+      summary: Normal call completed for an unanswered call by a user
+      value:
+        id: 2836c843-96e6-4f3a-9c04-69bb0b10febf
+        event: call_completed
+        timestamp: '2021-10-27T08:58:21.66Z'
+        direction: inbound
+        duration: 0
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '202'
+        dialed_number: '201'
+        call_id: a471d33e562b535b9ec530e1c0c3a5b2
+        call_source: normal
+    c2c-call-completed:
+      summary: Click to call completed for an answewred call by user
+      value:
+        id: 82101034-6050-4e78-a813-70a58beeab25
+        event: call_completed
+        timestamp: '2021-11-10T11:34:04.47Z'
+        direction: outbound
+        duration: 49
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '+14432528753'
+        dialed_number: '+14432528752'
+        call_id: 203a4f1e0a59e36b68cd85c508573893
+        call_source: click2call
+        click_to_call_info:
+          c2c_api_request_id: 4fe62e9-4a935b5eb4aeae47
+          c2c_client_id: n2p-api
+    normal-call-consultative-transfer:
+      summary: Call consultative transfer by a user for a normal call
+      value:
+        id: 697e3414-91aa-47a3-804b-bf415b568c36
+        event: call_consultative_transfer
+        timestamp: '2021-11-10T11:34:04.47Z'
+        direction: inbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        reason: transferer
+        originating_number: '202'
+        dialed_number: '201'
+        call_id: 203a4f1e0a59e36b68cd85c508573893
+        call_source: normal
+    c2c-call-consultative-transfer:
+      summary: Call consultative transfer by a user for a click to call
+      value:
+        id: e03f1cc8-0201-46db-a9c4-8bae2e31a9a8
+        event: call_consultative_transfer
+        timestamp: '2021-11-10T11:33:46.72Z'
+        direction: outbound
+        reason: transferee
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '+14432528753'
+        dialed_number: '+14432528752'
+        call_id: 203a4f1e0a59e36b68cd85c508573893
+        call_source: click2call
+        click_to_call_info:
+          c2c_api_request_id: 4fe62e9-4a935b5eb4aeae47
+          c2c_client_id: n2p-api
+    normal-call-forward:
+      summary: Forward an incoming call to another user
+      value:
+        id: e56b8ca2-47b6-44f1-8df4-42382d260855
+        event: call_forward
+        timestamp: '2021-10-27T09:04:27.17Z'
+        direction: inbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '201'
+        dialed_number: '202'
+        forward_number: '203'
+        call_id: ce3ba63d662ff8f9455da9f954f3b472
+        call_source: normal
+    c2c-call-forward:
+      summary: Forward a click to call to an external number
+      value:
+        id: 5b436870-44c1-4d81-be07-5e1902c4d153
+        event: call_forward
+        timestamp: '2021-10-27T09:12:32.00Z'
+        direction: outbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '+14432528753'
+        dialed_number: '+14432528752'
+        forward_number: '+14432528853'
+        call_id: ce3ba63d662ff8f9455da9f954f3b472
+        call_source: click2call
+        click_to_call_info:
+          c2c_api_request_id: 4fe62e9-4a935b5eb4aeae47
+          c2c_client_id: n2p-api
+    normal-call-hold:
+      summary: Hold an incoming call
+      value:
+        id: cad01fc2-6e60-49a0-a353-4f9e0d81f1f2
+        event: call_hold
+        timestamp: '2021-11-10T11:34:00.33Z'
+        direction: inbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        reason: holder
+        originating_number: '201'
+        dialed_number: '202'
+        call_id: 203a4f1e0a59e36b68cd85c508573893
+        call_source: normal
+    c2c-call-hold:
+      summary: Hold a call received via Click to Call API
+      value:
+        id: e36573e7-5065-4c64-b8bd-31a0ee37db43
+        event: call_hold
+        timestamp: '2021-11-10T11:34:04.29Z'
+        direction: outbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        reason: holdee
+        originating_number: '+14432528753'
+        dialed_number: '+14432528752'
+        call_id: 203a4f1e0a59e36b68cd85c508573893
+        call_source: click2call
+        click_to_call_info:
+          c2c_api_request_id: 4fe62e9-4a935b5eb4aeae47
+          c2c_client_id: n2p-api
+    normal-call-missed:
+      summary: Call missed by a user who did not answer
+      value:
+        id: 0ae648e6-7fbe-44ec-9289-f85c4f54c445
+        event: call_missed
+        timestamp: '2021-11-16T01:28:55.65Z'
+        direction: inbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        duration: 0
+        reason: user_did_not_answer
+        originating_number: '201'
+        dialed_number: '202'
+        call_id: 3b4ddffc082daed9ed0c055850b4a23e
+        call_source: normal
+    c2c-call-missed:
+      summary: Click to call missed by a user who is not logged in to the app
+      value:
+        id: e36573e7-5065-4c64-b8bd-31a0ee37db43
+        event: call_missed
+        timestamp: '2021-11-10T11:34:04.29Z'
+        direction: outbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        duration: 0
+        reason: user_not_logged_in
+        originating_number: '+14432528753'
+        dialed_number: '+14432528752'
+        call_id: a471d33e562b535b9ec530e1c0c3a5b2
+        call_source: click2call
+        click_to_call_info:
+          c2c_api_request_id: 4fe62e9-4a935b5eb4aeae47
+          c2c_client_id: n2p-api
+    normal-call-park:
+      summary: Park an incoming call
+      value:
+        id: 62a42abf-a0dc-41a4-98a4-18e7ea29d2af
+        event: call_park
+        timestamp: '2021-11-10T11:42:11.98Z'
+        direction: inbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '202'
+        dialed_number: '201'
+        call_id: 2c128ccfb3701444275543869f47db38
+        call_source: normal
+        slot: '2'
+    c2c-call-park:
+      summary: Park a call received via Click To Call API
+      value:
+        id: 5b436870-44c1-4d81-be07-5e1902c4d153
+        event: call_park
+        timestamp: '2021-10-27T09:04:26.00Z'
+        direction: outbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '+14432528753'
+        dialed_number: '+14432528752'
+        call_id: ce3ba63d662ff8f9455da9f954f3b472
+        call_source: click2call
+        slot: '1'
+        click_to_call_info:
+          c2c_api_request_id: 4fe62e9-4a935b5eb4aeae47
+          c2c_client_id: n2p-api
+    normal-call-pickup:
+      summary: Pickup a call rining on another user device
+      value:
+        id: bd19d322-17d1-4489-bf43-ec26cfe5d7de
+        event: call_pickup
+        timestamp: '2021-11-10T13:19:57.77Z'
+        direction: inbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '+14432528752'
+        dialed_number: '*97203'
+        call_id: 589c9ee2b48f83c512db3cbb2d69b3aa
+        pickup_event_info:
+          id: 2
+          name: John Doe
+          extension: '203'
+        call_source: normal
+    c2c-call-pickup:
+      summary: Pickup a Click to Call ringing on another user
+      value:
+        id: 6ef98e35-2220-45d4-b76a-a8e15ba4ab3e
+        event: call_pickup
+        timestamp: '2021-10-27T08:58:21.66Z'
+        direction: outbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '+14432528752'
+        dialed_number: '*97203'
+        call_id: a471d33e562b535b9ec530e1c0c3a5b2
+        pickup_event_info:
+          id: 2
+          name: John Doe
+          extension: '203'
+        call_source: click2call
+        click_to_call_info:
+          c2c_api_request_id: 4fe62e9-4a935b5eb4aeae47
+          c2c_client_id: n2p-api
+    normal-call-recorded:
+      summary: Call recorded for an incoming call
+      value:
+        id: e36573e7-5065-4c64-b8bd-31a0ee37db43
+        event: call_recorded
+        timestamp: '2021-11-10T11:34:04.29Z'
+        direction: inbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '202'
+        dialed_number: '201'
+        call_id: 203a4f1e0a59e36b68cd85c508573893
+        call_source: normal
+        audio_message_id: 89007
+        audio_message_url: 'https://app.net2phone.com/api/call-record/89007'
+    c2c-call-recorded:
+      summary: Click to call recorded
+      value:
+        id: 6ef98e35-2220-45d4-b76a-a8e15ba4ab3e
+        event: call_recorded
+        timestamp: '2021-10-27T08:58:21.66Z'
+        direction: outbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '+14432528753'
+        dialed_number: '+14432528752'
+        call_id: a471d33e562b535b9ec530e1c0c3a5b2
+        call_source: click2call
+        audio_message_id: 89011
+        audio_message_url: 'https://app.net2phone.com/api/call-record/89011'
+        click_to_call_info:
+          c2c_api_request_id: 4fe62e9-4a935b5eb4aeae47
+          c2c_client_id: n2p-api
+    normal-call-recording-failed:
+      summary: Call recoding failed for an incoming call
+      value:
+        id: bd19d322-17d1-4489-bf43-ec26cfe5d7de
+        event: call_recording_failed
+        timestamp: '2021-11-10T13:19:57.77Z'
+        direction: inbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        reason: maxCallRecordings
+        originating_number: '201'
+        dialed_number: '202'
+        call_id: 589c9ee2b48f83c512db3cbb2d69b3aa
+        call_source: normal
+    c2c-call-recording-failed:
+      summary: Call recodging failed for a click to call
+      value:
+        id: 6ef98e35-2220-45d4-b76a-a8e15ba4ab3e
+        event: call_recording_failed
+        timestamp: '2021-10-27T08:58:21.66Z'
+        direction: outbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        reason: maxCallRecordings
+        originating_number: '+14432528753'
+        dialed_number: '+14432528752'
+        call_id: a471d33e562b535b9ec530e1c0c3a5b2
+        call_source: click2call
+        click_to_call_info:
+          c2c_api_request_id: 4fe62e9-4a935b5eb4aeae47
+          c2c_client_id: n2p-api
+    normal-call-resume:
+      summary: Resume a normal incoming call
+      value:
+        id: e03f1cc8-0201-46db-a9c4-8bae2e31a9a8
+        event: call_resume
+        timestamp: '2021-11-10T11:33:46.72Z'
+        direction: inbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        reason: resumer
+        hold_duration: 22
+        originating_number: '202'
+        dialed_number: '201'
+        call_id: 203a4f1e0a59e36b68cd85c508573893
+        call_source: normal
+    c2c-call-resume:
+      summary: Resume click to call
+      value:
+        id: 62a42abf-a0dc-41a4-98a4-18e7ea29d2af
+        event: call_resume
+        timestamp: '2021-11-10T11:42:11.98Z'
+        direction: outbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        reason: resumer
+        hold_duration: 7
+        originating_number: '+14432528753'
+        dialed_number: '+14432528752'
+        call_id: 2c128ccfb3701444275543869f47db38
+        call_source: click2call
+        click_to_call_info:
+          c2c_api_request_id: 4fe62e9-4a935b5eb4aeae47
+          c2c_client_id: n2p-api
+    normal-call-rg-queue-completed:
+      summary: A call in a ring group is completed
+      value:
+        id: 867f1b4e-ad1b-42a3-9356-dafd1f04d4ce
+        event: call_rg_queue_completed
+        timestamp: '2021-11-15T07:04:24.31Z'
+        direction: inbound
+        user:
+          account_id: 42
+        originating_number: '201'
+        dialed_number: '401'
+        call_id: 9bdb266d73f7c40f9458594fe1e18f68
+        call_source: normal
+    c2c-call-rg-queue-completed:
+      summary: A click to call in a ring group is completed
+      value:
+        id: e03f1cc8-0201-46db-a9c4-8bae2e31a9a8
+        event: call_rg_queue_completed
+        timestamp: '2021-11-10T11:33:46.72Z'
+        direction: outbound
+        user:
+          account_id: 42
+        originating_number: '+14432528753'
+        dialed_number: '+14432528752'
+        call_id: 203a4f1e0a59e36b68cd85c508573893
+        call_source: click2call
+        click_to_call_info:
+          c2c_api_request_id: 4fe62e9-4a935b5eb4aeae47
+          c2c_client_id: n2p-api
+    normal-call-rg-queue-entered:
+      summary: A normal call entered in a ring group calls queue
+      value:
+        id: 588ef887-9e2e-453b-80ac-3629b9d54fe4
+        event: call_rg_queue_entered
+        timestamp: '2021-11-10T11:44:22.24Z'
+        direction: outbound
+        user:
+          account_id: 42
+        originating_number: '+14432528753'
+        dialed_number: '+14432528752'
+        call_id: 2c128ccfb3701444275543869f47db38
+        call_source: click2call
+        click_to_call_info:
+          c2c_api_request_id: 4fe62e9-4a935b5eb4aeae47
+          c2c_client_id: n2p-api
+    c2c-call-rg-queue-entered:
+      summary: A click to call entered in a ring group calls queue
+      value:
+        id: f0912a49-a86d-4203-9532-d4097fd74734
+        event: call_rg_queue_entered
+        timestamp: '2021-11-15T07:04:21.56Z'
+        direction: inbound
+        user:
+          account_id: 42
+        originating_number: '201'
+        dialed_number: '401'
+        call_id: 9bdb266d73f7c40f9458594fe1e18f68
+        call_source: normal
+    normal-call-rg-queue-tier:
+      summary: Normal call sent to a user in a ring group tier
+      value:
+        id: 4e528d63-0885-4bb7-acbb-489e30b8e64e
+        event: call_rg_queue_tier
+        timestamp: '2021-11-15T07:04:22.63Z'
+        direction: inbound
+        user:
+          account_id: 42
+        originating_number: '201'
+        dialed_number: '401'
+        call_id: 9bdb266d73f7c40f9458594fe1e18f68
+        call_source: normal
+    c2c-call-rg-queue-tier:
+      summary: A click to call in a ring group sent to a user in it's tier
+      value:
+        id: 42c5262d-a93e-4d74-ad26-d7b4d16a5285
+        event: call_rg_queue_tier
+        timestamp: '2021-11-10T11:33:25.58Z'
+        direction: outbound
+        user:
+          account_id: 42
+        originating_number: '+14432528753'
+        dialed_number: '+14432528752'
+        call_id: 03f592fc18f3efbf688eb059703a4e10
+        call_source: click2call
+        click_to_call_info:
+          c2c_api_request_id: 4fe62e9-4a935b5eb4aeae47
+          c2c_client_id: n2p-api
+    normal-call-ringing:
+      summary: A call is ringing for a user
+      value:
+        id: b1c31602-f0a1-4022-920b-038ee4c4f3d9
+        event: call_ringing
+        timestamp: '2021-10-27T09:04:01.24Z'
+        direction: outbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '201'
+        dialed_number: '202'
+        call_id: ce3ba63d662ff8f9455da9f954f3b472
+        call_source: normal
+    c2c-call-ringing:
+      summary: A click to call is ringing on a user
+      value:
+        id: 6ef98e35-2220-45d4-b76a-a8e15ba4ab3e
+        event: call_ringing
+        timestamp: '2021-10-27T08:58:21.66Z'
+        direction: outbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '+14432528753'
+        dialed_number: '+14432528752'
+        call_id: a471d33e562b535b9ec530e1c0c3a5b2
+        call_source: click2call
+        click_to_call_info:
+          c2c_api_request_id: 4fe62e9-4a935b5eb4aeae47
+          c2c_client_id: n2p-api
+    normal-call-unpark:
+      summary: Unpark an incoming call
+      value:
+        id: 588ef887-9e2e-453b-80ac-3629b9d54fe4
+        event: call_unpark
+        timestamp: '2021-11-10T11:44:22.24Z'
+        direction: inbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '202'
+        dialed_number: '201'
+        call_id: 2c128ccfb3701444275543869f47db38
+        call_source: normal
+        slot: '1'
+    c2c-call-unpark:
+      summary: Unpark a parked click to call
+      value:
+        id: cad01fc2-6e60-49a0-a353-4f9e0d81f1f2
+        event: call_unpark
+        timestamp: '2021-11-10T11:34:00.33Z'
+        direction: outbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '+14432528753'
+        dialed_number: '+14432528752'
+        call_id: 203a4f1e0a59e36b68cd85c508573893
+        call_source: click2call
+        slot: '1'
+        click_to_call_info:
+          c2c_api_request_id: 4fe62e9-4a935b5eb4aeae47
+          c2c_client_id: n2p-api
+    emergency-call:
+      summary: A user has reached an emergency service
+      value:
+        id: c528e4c5-9c83-49c3-9989-e463c0919e44
+        event: emergency_call
+        timestamp: '2021-10-27T09:04:03.25Z'
+        direction: outbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        originating_number: '201'
+        dialed_number: '911'
+        call_id: ce3ba63d662ff8f9455da9f954f3b472
+        call_source: normal
     mms-to-user:
       summary: MMS from external phone number to a phone number assigned to a User.
       value:
@@ -3473,6 +4422,214 @@ components:
           target: department
           content: 'Hello, there!'
           from_user_id: 61435642343f430001253bfc
+    normal-voicemail-missed:
+      summary: A voicemail has been missed for a user for an incoming call
+      value:
+        id: 616ffa61-3f82-4b05-97ed-7301943fd439
+        event: voicemail_missed
+        timestamp: '2021-11-10T13:56:08.19Z'
+        direction: inbound
+        duration: 0
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        reason: caller_hungup
+        originating_number: '201'
+        dialed_number: '202'
+        call_id: 3f88a536581fd8fd44a3ab7774565da5
+        call_source: normal
+    c2c-voicemail-missed:
+      summary: Voicemail missed by a user from a click to call
+      value:
+        id: 67393d05-c69c-4993-8b96-f0dfa658e0bd
+        event: voicemail_missed
+        timestamp: '2021-11-16T09:36:04.79Z'
+        direction: inbound
+        duration: 0
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        reason: vm_disabled
+        originating_number: '+19739331434'
+        dialed_number: '+14432528754'
+        call_id: fd436c083b16d6bde4be37892713ca23
+        call_source: click2call
+        click_to_call_info:
+          c2c_api_request_id: 517d7f6e-400655b760aea219
+          c2c_client_id: n2p-api
+    voicemail-notify:
+      summary: A user has reached a voicemail service
+      value:
+        id: d42b5f92-10b8-439c-8caa-f3832fdb737a
+        event: voicemail_notify
+        timestamp: '2021-11-10T12:12:48.09Z'
+        direction: outbound
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        voicemail: true
+        originating_number: '202'
+        dialed_number: '*95'
+        call_id: ba6460d2947609bfadce98d28bc7ff4f
+        call_source: normal
+    normal-voicemail-received:
+      summary: A voice mail has been received by a user
+      value:
+        id: 5b436870-44c1-4d81-be07-5e1902c4d153
+        event: voicemail_received
+        timestamp: '2021-10-27T09:04:26.00Z'
+        direction: inbound
+        duration: 10
+        user:
+          id: 1
+          name: Jane Doe
+          account_id: 42
+        user_name: Jane Doe
+        voicemail: true
+        originating_number: '201'
+        dialed_number: '202'
+        call_id: ce3ba63d662ff8f9455da9f954f3b472
+        call_source: normal
+        audio_message_id: 3903
+        audio_message_url: 'https://app.net2phone.com/api/voice-mail/3903'
+    c2c-voicemail-received:
+      summary: A voicemail has been received for a department from a click to call
+      value:
+        id: 697e3414-91aa-47a3-804b-bf415b568c36
+        event: voicemail_received
+        timestamp: '2021-11-10T11:34:04.47Z'
+        direction: outbound
+        duration: 12
+        user:
+          account_id: 42
+        voicemail: true
+        originating_number: '+19739331434'
+        dialed_number: '+14432528754'
+        call_id: 203a4f1e0a59e36b68cd85c508573893
+        call_source: click2call
+        audio_message_id: 3907
+        audio_message_url: 'https://app.net2phone.com/api/voice-mail/3907'
+        click_to_call_info:
+          c2c_api_request_id: 517d7f6e-400655b760aea219
+          c2c_client_id: n2p-api
+  parameters:
+    limit:
+      name: limit
+      in: query
+      description: Number of items per page.
+      schema:
+        type: integer
+        format: int32
+        default: 10
+        minimum: 1
+        maximum: 100
+    before:
+      name: before
+      in: query
+      description: >-
+        The opaque cursor to paginate backwards. Cannot be used together with
+        `after`.
+      schema:
+        type: string
+        example: eyJrIjoiRkM5RDhDQTktRkZCMy00REEzLTg1MEQtNkQ3Nzk5QTMzMTlFIn0=
+    after:
+      name: after
+      in: query
+      description: >-
+        The opaque cursor to paginate forwards. Cannot be used together with
+        `before`.
+      schema:
+        type: string
+        example: eyJrIjoiRkM5RDhDQTktRkZCMy00REEzLTg1MEQtNkQ3Nzk5QTMzMTlFIn0=
+    webhook-signature:
+      name: x-net2phone-signature
+      in: header
+      required: false
+      x-n2p-accountBackendTypes:
+        - unite
+      description: >-
+        Used to make sure the webhook request is authentic and comes from
+        net2phone. To validate the signature:
+
+        1. Retrieve the raw body of the webhook request.
+
+        2. Concatentate two parts using the `:` character. The resulting string
+        should looke like `{signature}:{raw_body}`.
+
+        3. Compute the HMAC-SHA256 hash from the given string. Use the
+        `x-net2phone-timestamp` header as the key. All "string to bytes"
+        conversions should be performed using UTF-8 encoding.
+
+        4. Convert the resulting HMAC-SHA256 hash bytes back to a string using
+        HEX encoding (without `-` characters).
+
+        5. Compare the resulting string with the value present in the
+        `x-net2phone-signature` header. If they are equal, the request is
+        authentic.
+
+
+        See [support
+        article](https://support.net2phone.com/s/article/Securing-net2phone-webhook-requests-to-your-application)
+        for more information.
+      schema:
+        type: string
+        example: fe4aad021345e9c6506e163ba62aea8a0f15047712618482a2423cc008dd2fb2
+    webhook-timestamp:
+      name: x-net2phone-timestamp
+      in: header
+      required: false
+      description: >-
+        The timestamp of the request. Used to validate the authenticity of the
+        webhook request in combination with `x-net2phone-signature` header.
+      x-n2p-accountBackendTypes:
+        - unite
+      schema:
+        type: string
+        format: date-time
+        example: 2021-09-17T09:13:08.912Z
+    webhook-subscription-id:
+      name: webhook_subscription_id
+      in: path
+      required: true
+      description: The unique id of the webhook subscription within account.
+      schema:
+        $ref: '#/components/schemas/string-id'
+    conversation-id:
+      name: conversation_id
+      in: path
+      required: true
+      description: The unique id of the conversation.
+      schema:
+        $ref: '#/components/schemas/conversation-id'
+    event-id:
+      name: event_id
+      in: path
+      required: true
+      description: Unique identifier of the event.
+      schema:
+        $ref: '#/components/schemas/conversation-event-id'
+    call-queue-id:
+      name: call_queue_id
+      in: path
+      required: true
+      description: The unique id of the call queue within account.
+      schema:
+        $ref: '#/components/schemas/string-id'
+      example: '10293993'
+    audio-id:
+      name: audio_id
+      in: path
+      required: true
+      description: The unique id for audio file.
+      schema:
+        $ref: '#/components/schemas/string-id'
+      example: c4aac21b-542c-4707-814e-8fad5b9b939b
   callbacks:
     call-answered:
       '{$request.body#/endpoint_url}':
@@ -3489,6 +4646,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/call-answered-event'
+                examples:
+                  NormalCallAnswered:
+                    $ref: '#/components/examples/normal-call-answered'
+                  C2CCallAnswered:
+                    $ref: '#/components/examples/c2c-call-answered'
           responses:
             default:
               description: >-
@@ -3512,6 +4674,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/call-blind-transfer-event'
+                examples:
+                  NormalCallBlindTransfer:
+                    $ref: '#/components/examples/normal-call-blind-transfer'
+                  C2CCallBlindTransfer:
+                    $ref: '#/components/examples/c2c-blind-transfer'
           responses:
             default:
               description: >-
@@ -3535,6 +4702,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/call-blocked-event'
+                examples:
+                  CallBlockedAccountLevel:
+                    $ref: '#/components/examples/call-blocked-account-level'
+                  CallBlockedUserLevel:
+                    $ref: '#/components/examples/call-blocked-user-level'
           responses:
             default:
               description: >-
@@ -3559,6 +4731,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/call-busy-event'
+                examples:
+                  NormalCallBusy:
+                    $ref: '#/components/examples/normal-call-busy'
+                  C2CCallBusy:
+                    $ref: '#/components/examples/c2c-call-busy'
           responses:
             default:
               description: >-
@@ -3582,6 +4759,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/call-completed-event'
+                examples:
+                  NormalCallCompleted:
+                    $ref: '#/components/examples/normal-call-completed'
+                  C2CCallCompleted:
+                    $ref: '#/components/examples/c2c-call-completed'
           responses:
             default:
               description: >-
@@ -3605,6 +4787,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/call-consultative-transfer-event'
+                examples:
+                  NormalCallConsultativeTransfer:
+                    $ref: '#/components/examples/normal-call-consultative-transfer'
+                  C2CCallConsultativeTransfer:
+                    $ref: '#/components/examples/c2c-call-consultative-transfer'
           responses:
             default:
               description: >-
@@ -3628,6 +4815,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/call-forward-event'
+                examples:
+                  NormalCallForward:
+                    $ref: '#/components/examples/normal-call-forward'
+                  C2CCallForward:
+                    $ref: '#/components/examples/c2c-call-forward'
           responses:
             default:
               description: >-
@@ -3651,6 +4843,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/call-hold-event'
+                examples:
+                  NormalCallHold:
+                    $ref: '#/components/examples/normal-call-hold'
+                  C2CCallHold:
+                    $ref: '#/components/examples/c2c-call-hold'
           responses:
             default:
               description: >-
@@ -3664,7 +4861,7 @@ components:
         post:
           operationId: NotifyCallMissed
           description: >-
-            This event is triggered when an incoming call isn’t answered by any
+            This event is triggered when an incoming call isnâ€™t answered by a
             user in your net2phone account.
           parameters:
             - $ref: '#/components/parameters/webhook-signature'
@@ -3674,6 +4871,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/call-missed-event'
+                examples:
+                  NormalCallMissed:
+                    $ref: '#/components/examples/normal-call-missed'
+                  C2CCallMissed:
+                    $ref: '#/components/examples/c2c-call-missed'
           responses:
             default:
               description: >-
@@ -3697,6 +4899,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/call-park-event'
+                examples:
+                  NormalCallPark:
+                    $ref: '#/components/examples/normal-call-park'
+                  C2CCallPark:
+                    $ref: '#/components/examples/c2c-call-park'
           responses:
             default:
               description: >-
@@ -3721,6 +4928,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/call-pickup-event'
+                examples:
+                  NormalCallPickup:
+                    $ref: '#/components/examples/normal-call-pickup'
+                  C2CCallPickup:
+                    $ref: '#/components/examples/c2c-call-pickup'
           responses:
             default:
               description: >-
@@ -3744,6 +4956,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/call-recorded-event'
+                examples:
+                  NormalCallRecorded:
+                    $ref: '#/components/examples/normal-call-recorded'
+                  C2CCallRecorded:
+                    $ref: '#/components/examples/c2c-call-recorded'
           responses:
             default:
               description: >-
@@ -3765,6 +4982,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/call-recording-failed-event'
+                examples:
+                  NormalCallRecordingFailed:
+                    $ref: '#/components/examples/normal-call-recording-failed'
+                  C2CCallRecordingFailed:
+                    $ref: '#/components/examples/c2c-call-recording-failed'
           responses:
             default:
               description: >-
@@ -3788,6 +5010,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/call-resume-event'
+                examples:
+                  NormalCallResume:
+                    $ref: '#/components/examples/normal-call-resume'
+                  C2CCallResume:
+                    $ref: '#/components/examples/c2c-call-resume'
           responses:
             default:
               description: >-
@@ -3811,6 +5038,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/call-rg-queue-completed-event'
+                examples:
+                  NormalCallRgQueueCompleted:
+                    $ref: '#/components/examples/normal-call-rg-queue-completed'
+                  C2CCallRgQueueCompleted:
+                    $ref: '#/components/examples/c2c-call-rg-queue-completed'
           responses:
             default:
               description: >-
@@ -3834,6 +5066,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/call-rg-queue-entered-event'
+                examples:
+                  NormalCallRgQueueEntered:
+                    $ref: '#/components/examples/normal-call-rg-queue-entered'
+                  C2CCallRgQueueEntered:
+                    $ref: '#/components/examples/c2c-call-rg-queue-entered'
           responses:
             default:
               description: >-
@@ -3858,6 +5095,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/call-rg-queue-tier-event'
+                examples:
+                  NormalCallRgQueueTier:
+                    $ref: '#/components/examples/normal-call-rg-queue-tier'
+                  C2CCallRgQueueTier:
+                    $ref: '#/components/examples/c2c-call-rg-queue-tier'
           responses:
             default:
               description: >-
@@ -3882,6 +5124,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/call-ringing-event'
+                examples:
+                  NormalCallRinging:
+                    $ref: '#/components/examples/normal-call-ringing'
+                  C2CCallRinging:
+                    $ref: '#/components/examples/c2c-call-ringing'
           responses:
             default:
               description: >-
@@ -3905,6 +5152,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/call-unpark-event'
+                examples:
+                  NormalCallUnpark:
+                    $ref: '#/components/examples/normal-call-unpark'
+                  C2CCallUnpark:
+                    $ref: '#/components/examples/c2c-call-unpark'
           responses:
             default:
               description: >-
@@ -3928,6 +5180,9 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/emergency-call-event'
+                examples:
+                  EmergencyCall:
+                    $ref: '#/components/examples/emergency-call'
           responses:
             default:
               description: >-
@@ -3982,6 +5237,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/voicemail-missed-event'
+                examples:
+                  NormalVoicemailMissed:
+                    $ref: '#/components/examples/normal-voicemail-missed'
+                  C2CVoicemailMissed:
+                    $ref: '#/components/examples/c2c-voicemail-missed'
           responses:
             default:
               description: >-
@@ -4005,6 +5265,9 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/voicemail-notify-event'
+                examples:
+                  VoicemailNotify:
+                    $ref: '#/components/examples/voicemail-notify'
           responses:
             default:
               description: >-
@@ -4029,6 +5292,11 @@ components:
               application/json:
                 schema:
                   $ref: '#/components/schemas/voicemail-received-event'
+                examples:
+                  NormalVoicemailReceived:
+                    $ref: '#/components/examples/normal-voicemail-received'
+                  C2CVoiceMailReceived:
+                    $ref: '#/components/examples/c2c-voicemail-received'
           responses:
             default:
               description: >-
