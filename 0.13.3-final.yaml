@@ -97,10 +97,9 @@ paths:
           content:
             application/json:
               schema:
-                  allOf:
-                    - type: object
-                      nullable: false
-                    - $ref: '#/components/schemas/user'
+                nullable: false
+                allOf:
+                  - $ref: '#/components/schemas/user'
               examples:
                 Unite:
                   $ref: '#/components/examples/unite-user'
@@ -1113,10 +1112,9 @@ components:
         items:
           type: array
           items:
+            nullable: false
             allOf:
               - $ref: '#/components/schemas/user'
-              - type: object
-                nullable: false
       title: CollectionOfUser
     error:
       type: object
