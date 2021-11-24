@@ -1110,7 +1110,9 @@ components:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/user'
+            nullable: true
+            allOf:
+              - $ref: '#/components/schemas/user'
       title: CollectionOfUser
     error:
       type: object
