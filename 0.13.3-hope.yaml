@@ -97,7 +97,10 @@ paths:
           content:
             application/json:
               schema:
-                  $ref: '#/components/schemas/user'
+                  allOf:
+                    - type: object
+                      nullable: false
+                    - $ref: '#/components/schemas/user'
               examples:
                 Unite:
                   $ref: '#/components/examples/unite-user'
