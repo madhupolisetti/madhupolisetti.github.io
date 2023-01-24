@@ -63,7 +63,7 @@ class FCM {
 			var existingWorker = null;
 			if(existingWorkerCount == 0){
 				console.log("Registering FCM worker");
-				existingWorker = await navigator.serviceWorker.register(`/firebase-messaging-sw.js`);
+				existingWorker = await navigator.serviceWorker.register(`./firebase-messaging-sw.js`);
 				messaging.useServiceWorker(existingWorker);	
 			}else{
 				existingWorker = existingWorkers[0];
