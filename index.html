@@ -16,17 +16,30 @@
 
     <!-- FontAwesome JS-->
     <script defer src="assets/fontawesome/js/all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+
 
     <!-- Theme CSS -->
     <link id="theme-style" rel="stylesheet" href="assets/css/devresume.css">
-    <style type="text/css">
+    <style>
         .product-logo {
             border-radius: 50%;
             height: 25px;
             width: 50px;
         }
-    </style>
+        @media print {
+            /* Hide the download button in the PDF */
+            #download-cv {
+                display: none;
+            }
+        }
 
+        .hide-in-pdf {
+            display: none;
+        }
+
+
+    </style>
 </head>
 
 <body>
@@ -46,6 +59,7 @@
                             <li class="mb-2"><i class="fas fa-phone-square fa-fw fa-lg me-2 "></i><a class="resume-link"
                                                                                                      href="tel:#">+91 99
                                 66 22 66 45</a></li>
+
                             <li class="mb-2"><i class="fas fa-envelope-square fa-fw fa-lg me-2"></i><a
                                     class="resume-link" href="mailto:#">nudgeme@madhup.me</a></li>
                             <li class="mb-2"><i class="fas fa-globe fa-fw fa-lg me-2"></i><a class="resume-link"
@@ -56,6 +70,9 @@
                         </ul>
                     </div><!--//resume-contact-->
                 </div><!--//row-->
+                <div>
+                    <button id="download-cv" style="background-color: #54B689; border-radius: 5px">Download CV</button>
+                </div>
 
             </div><!--//resume-header-->
             <hr>
@@ -412,6 +429,28 @@
 
 </div><!--//main-wrapper-->
 
+<script>
+    document.getElementById('download-cv').addEventListener('click', function () {
+        // Select the element to be converted to PDF
+        const element = document.body;
+
+        document.getElementById('download-cv').classList.add('hide-in-pdf');
+
+        // Options for the PDF
+        const opt = {
+            margin:       0.5,
+            filename:     'Madhu-Polisetti-CV.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        html2pdf().from(element).set(opt).save().then(() => {
+            // Remove the class after the PDF is generated
+            document.getElementById('download-cv').classList.remove('hide-in-pdf');
+        });
+    });
+</script>
 
 </body>
 </html> 
