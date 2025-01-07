@@ -6719,6 +6719,7 @@ paths:
         - unite
         - unite3
       x-n2p-throttlingQuota: 1
+      x-n2p-pubternal: true
   /phone-numbers:batch-create:
     post:
       x-n2p-comment: >-
