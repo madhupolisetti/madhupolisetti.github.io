@@ -1277,8 +1277,9 @@ paths:
         - unite3
       x-n2p-throttlingQuota: 1
   /webhook-subscriptions:
+    x-n2p-gateway-auth-bypass: false
     get:
-      x-n2p-gateway-auth-bypass: 
+      x-n2p-gateway-auth-bypass: true
       operationId: ListWebhookSubscriptions
       description: >-
         Lists all webhook subscriptions accessible to the current user. `Admin`
