@@ -936,7 +936,7 @@ paths:
         - unite3
   /users:batch-get:
     get:
-      x-n2p-gateway-auth-bypass: 1
+      x-n2p-gatewayAuthBypass: 1
       x-n2p-internal: true
       operationId: BatchGetUsers
       description: >-
@@ -1009,7 +1009,7 @@ paths:
         - unite3
   /users/@me:
     get:
-      x-n2p-gateway-auth-bypass: 0
+      x-n2p-gatewayAuthBypass: 0
       operationId: GetCurrentUser
       description: >-
         Gets the user object of the current logged in (who is accessing the API)
@@ -1050,7 +1050,7 @@ paths:
       x-n2p-throttlingQuota: 1
   /users/{user_id}/call-forwarding-settings:
     get:
-      x-n2p-gateway-auth-bypass: 10
+      x-n2p-gatewayAuthBypass: 10
       operationId: GetUserCallForwardingSettings
       tags:
         - Call Forwarding
@@ -1148,7 +1148,7 @@ paths:
       x-n2p-throttlingQuota: 1
   /users/{user_id}/call-recording-settings:
     get:
-      x-n2p-gateway-auth-bypass: 01
+      x-n2p-gatewayAuthBypass: 01
       operationId: GetUserCallRecordingSettings
       tags:
         - Call Recording
@@ -1239,7 +1239,7 @@ paths:
       x-n2p-throttlingQuota: 1
   /webhook-event-types:
     get:
-      x-n2p-gateway-auth-bypass: true
+      x-n2p-gatewayAuthBypass: true
       operationId: ListWebhookEventTypes
       description: List all the supported event types.
       tags:
@@ -1278,7 +1278,7 @@ paths:
       x-n2p-throttlingQuota: 1
   /webhook-subscriptions:
     get:
-      x-n2p-gateway-auth-bypass: true
+      x-n2p-gatewayAuthBypass: true
       operationId: ListWebhookSubscriptions
       description: >-
         Lists all webhook subscriptions accessible to the current user. `Admin`
@@ -1316,7 +1316,7 @@ paths:
         - unite3
       x-n2p-throttlingQuota: 1
     post:
-      x-n2p-gateway-auth-bypass: false
+      x-n2p-gatewayAuthBypass: false
       operationId: CreateWebhookSubscription
       description: >-
         Creates a webhook subscription to receive callbacks on `endpoint_url`
@@ -1422,7 +1422,7 @@ paths:
       x-n2p-throttlingQuota: 1
   /webhook-subscriptions/{webhook_subscription_id}:
     get:
-      x-n2p-gateway-auth-bypass: ''
+      x-n2p-gatewayAuthBypass: ''
       operationId: GetWebhookSubscription
       description: >-
         Get details of specified webhook subscription if you are an `admin` of
@@ -1639,7 +1639,7 @@ paths:
       x-n2p-throttlingQuota: 1
   /conversations:
     get:
-      x-n2p-gateway-auth-bypass: 'something'
+      x-n2p-gatewayAuthBypass: 'something'
       operationId: ListConversations
       description: >-
         Returns the paginated list of all conversations that are accessible to
@@ -1757,7 +1757,7 @@ paths:
       x-n2p-throttlingQuota: 1
   /conversations/{conversation_id}/events/{event_id}:
     get:
-      x-n2p-gateway-auth-bypass: 11
+      x-n2p-gatewayAuthBypass: 11
       operationId: GetConversationEvent
       description: Get specified conversation event.
       tags:
@@ -1877,7 +1877,7 @@ paths:
       x-n2p-throttlingQuota: 1
   /conversations/{conversation_id}/events:
     get:
-      x-n2p-gateway-auth-bypass: 12
+      x-n2p-gatewayAuthBypass: 12
       operationId: ListConversationEvents
       description: Lists events of specified conversation.
       tags:
@@ -2074,7 +2074,7 @@ paths:
         - unite3
   /unified-conversation-activity-item-metrics:
     get:
-      x-n2p-gateway-auth-bypass: 22
+      x-n2p-gatewayAuthBypass: 22
       operationId: ListUnifiedConversationActivityItemMetrics
       x-n2p-internal: true
       security:
@@ -2105,7 +2105,7 @@ paths:
         - unite3
   /unified-conversations/{unified_conversation_id}/items:
     get:
-      x-n2p-gateway-auth-bypass: 00
+      x-n2p-gatewayAuthBypass: 00
       operationId: ListUnifiedConversationItems
       description: >-
         List unified conversation items, which are user's call detail records
@@ -6731,7 +6731,7 @@ paths:
         - unite
         - unite3
       x-n2p-throttlingQuota: 1
-      x-n2p-gateway-auth-bypass: false
+      x-n2p-gatewayAuthBypass: false
   /phone-numbers:batch-create:
     post:
       x-n2p-comment: >-
