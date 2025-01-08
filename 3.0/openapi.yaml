@@ -1274,6 +1274,7 @@ paths:
       x-n2p-throttlingQuota: 1
   /webhook-subscriptions:
     get:
+      x-n2p-gateway-auth-bypass: 
       operationId: ListWebhookSubscriptions
       description: >-
         Lists all webhook subscriptions accessible to the current user. `Admin`
@@ -1416,6 +1417,7 @@ paths:
       x-n2p-throttlingQuota: 1
   /webhook-subscriptions/{webhook_subscription_id}:
     get:
+      x-n2p-gateway-auth-bypass: ''
       operationId: GetWebhookSubscription
       description: >-
         Get details of specified webhook subscription if you are an `admin` of
@@ -1632,6 +1634,7 @@ paths:
       x-n2p-throttlingQuota: 1
   /conversations:
     get:
+      x-n2p-gateway-auth-bypass: 'something'
       operationId: ListConversations
       description: >-
         Returns the paginated list of all conversations that are accessible to
