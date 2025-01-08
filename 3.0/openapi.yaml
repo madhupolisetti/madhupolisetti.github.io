@@ -935,8 +935,8 @@ paths:
         - unite
         - unite3
   /users:batch-get:
-    x-n2p-gateway-auth-bypass: 1
     get:
+      x-n2p-gateway-auth-bypass: 1
       x-n2p-internal: true
       operationId: BatchGetUsers
       description: >-
@@ -1008,8 +1008,8 @@ paths:
         - unite
         - unite3
   /users/@me:
-    x-n2p-gateway-auth-bypass: 0
     get:
+      x-n2p-gateway-auth-bypass: 0
       operationId: GetCurrentUser
       description: >-
         Gets the user object of the current logged in (who is accessing the API)
@@ -1050,6 +1050,7 @@ paths:
       x-n2p-throttlingQuota: 1
   /users/{user_id}/call-forwarding-settings:
     get:
+      x-n2p-gateway-auth-bypass: 10
       operationId: GetUserCallForwardingSettings
       tags:
         - Call Forwarding
@@ -1147,6 +1148,7 @@ paths:
       x-n2p-throttlingQuota: 1
   /users/{user_id}/call-recording-settings:
     get:
+      x-n2p-gateway-auth-bypass: 01
       operationId: GetUserCallRecordingSettings
       tags:
         - Call Recording
@@ -1754,6 +1756,7 @@ paths:
       x-n2p-throttlingQuota: 1
   /conversations/{conversation_id}/events/{event_id}:
     get:
+      x-n2p-gateway-auth-bypass: 11
       operationId: GetConversationEvent
       description: Get specified conversation event.
       tags:
@@ -1873,6 +1876,7 @@ paths:
       x-n2p-throttlingQuota: 1
   /conversations/{conversation_id}/events:
     get:
+      x-n2p-gateway-auth-bypass: 12
       operationId: ListConversationEvents
       description: Lists events of specified conversation.
       tags:
@@ -2069,6 +2073,7 @@ paths:
         - unite3
   /unified-conversation-activity-item-metrics:
     get:
+      x-n2p-gateway-auth-bypass: 22
       operationId: ListUnifiedConversationActivityItemMetrics
       x-n2p-internal: true
       security:
@@ -2099,6 +2104,7 @@ paths:
         - unite3
   /unified-conversations/{unified_conversation_id}/items:
     get:
+      x-n2p-gateway-auth-bypass: 00
       operationId: ListUnifiedConversationItems
       description: >-
         List unified conversation items, which are user's call detail records
