@@ -1277,6 +1277,7 @@ paths:
         - unite3
       x-n2p-throttlingQuota: 1
   /webhook-subscriptions:
+    x-n2p-gateway-auth-bypass: true
     get:
       x-n2p-gateway-auth-bypass: 
       operationId: ListWebhookSubscriptions
@@ -1316,6 +1317,7 @@ paths:
         - unite3
       x-n2p-throttlingQuota: 1
     post:
+      x-n2p-gateway-auth-bypass: false
       operationId: CreateWebhookSubscription
       description: >-
         Creates a webhook subscription to receive callbacks on `endpoint_url`
