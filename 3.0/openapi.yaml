@@ -935,6 +935,7 @@ paths:
         - unite
         - unite3
   /users:batch-get:
+    x-n2p-gateway-auth-bypass: 1
     get:
       x-n2p-internal: true
       operationId: BatchGetUsers
@@ -1007,6 +1008,7 @@ paths:
         - unite
         - unite3
   /users/@me:
+    x-n2p-gateway-auth-bypass: 0
     get:
       operationId: GetCurrentUser
       description: >-
