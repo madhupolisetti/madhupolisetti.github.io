@@ -1235,7 +1235,7 @@ paths:
       x-n2p-throttlingQuota: 1
   /webhook-event-types:
     get:
-      x-n2p-pubternal: true
+      x-n2p-gateway-auth-bypass: true
       operationId: ListWebhookEventTypes
       description: List all the supported event types.
       tags:
@@ -6719,7 +6719,7 @@ paths:
         - unite
         - unite3
       x-n2p-throttlingQuota: 1
-      x-n2p-pubternal: true
+      x-n2p-gateway-auth-bypass: false
   /phone-numbers:batch-create:
     post:
       x-n2p-comment: >-
