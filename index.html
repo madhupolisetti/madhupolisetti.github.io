@@ -17,6 +17,10 @@
     <!-- FontAwesome JS-->
     <script defer src="assets/fontawesome/js/all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+
 
 
     <!-- Theme CSS -->
@@ -72,6 +76,9 @@
                 </div><!--//row-->
                 <div>
                     <button id="download-cv" style="background-color: #54B689; border-radius: 5px">Download CV</button>
+					<button id="print-cv" style="background-color: #54B689; border-radius: 5px">Print CV</button>
+					<button style="background-color: #54B689; border-radius: 5px" onclick="captureScreenshot()">Capture Screenshot</button>
+					<button style="background-color: #54B689; border-radius: 5px" onclick="domToImage()">DOM to Image</button>
                 </div>
 
             </div><!--//resume-header-->
@@ -429,6 +436,24 @@
 </div><!--//main-wrapper-->
 
 <script>
+	function captureScreenshot() {
+        html2canvas(document.body).then(canvas => {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = 'screenshot.png';
+            link.click();
+        });
+    }
+	
+	function domToImage() {
+        domtoimage.toPng(document.body).then((dataUrl) => {
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = 'screenshot.png';
+            link.click();
+        });
+    }
+	
     document.getElementById('download-cv').addEventListener('click', function () {
         // Select the element to be converted to PDF
         const element = document.body;
@@ -449,6 +474,24 @@
             document.getElementById('download-cv').classList.remove('hide-in-pdf');
         });
     });
+	
+	document.getElementById('print-cv').addEventListener('click', function () {
+		// document.getElementById('print-cv').classList.add('hide-in-pdf');
+		// window.print();
+		// document.getElementById('print-cv').classList.remove('hide-in-pdf');
+		const puppeteer = require('puppeteer');
+
+		(async () => {
+			const browser = await puppeteer.launch();
+			const page = await browser.newPage();
+			await page.goto('https://yourwebsite.com', { waitUntil: 'networkidle2' });
+
+			// Capture full-page screenshot
+			await page.screenshot({ path: 'screenshot.png', fullPage: true });
+
+			await browser.close();
+		})();
+	});
 </script>
 
 </body>
