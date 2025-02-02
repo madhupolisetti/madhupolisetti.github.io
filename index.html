@@ -19,6 +19,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 	
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+
 
 
 
@@ -77,8 +79,8 @@
                 <div>
                     <button id="download-cv" style="background-color: #54B689; border-radius: 5px">Download CV</button>
 					<button id="print-cv" style="background-color: #54B689; border-radius: 5px">Print CV</button>
-					<button style="background-color: #54B689; border-radius: 5px" onclick="captureScreenshot()">Capture Screenshot</button>
-					<button style="background-color: #54B689; border-radius: 5px" onclick="domToImage()">DOM to Image</button>
+					<button style="background-color: #54B689; border-radius: 5px" onclick="triggerCaptureScreenshot()">Capture Screenshot</button>
+					<button style="background-color: #54B689; border-radius: 5px" onclick="triggerDomToImage()">DOM to Image</button>
                 </div>
 
             </div><!--//resume-header-->
@@ -436,7 +438,7 @@
 </div><!--//main-wrapper-->
 
 <script>
-	function captureScreenshot() {
+	function triggerCaptureScreenshot() {
         html2canvas(document.body).then(canvas => {
             const link = document.createElement('a');
             link.href = canvas.toDataURL('image/png');
@@ -445,7 +447,7 @@
         });
     }
 	
-	function domToImage() {
+	function triggerDomToImage() {
         domtoimage.toPng(document.body).then((dataUrl) => {
             const link = document.createElement('a');
             link.href = dataUrl;
