@@ -16,9 +16,9 @@
 
     <!-- FontAwesome JS-->
     <script defer src="assets/fontawesome/js/all.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>-->
 	
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>-->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
 
 
@@ -436,46 +436,46 @@
 </div><!--//main-wrapper-->
 
 <script>
-	function triggerCaptureScreenshot() {
-        html2canvas(document.body).then(canvas => {
-            const link = document.createElement('a');
-            link.href = canvas.toDataURL('image/png');
-            link.download = 'screenshot.png';
-            link.click();
-        });
-    }
+	//function triggerCaptureScreenshot() {
+    //    html2canvas(document.body).then(canvas => {
+    //        const link = document.createElement('a');
+    //        link.href = canvas.toDataURL('image/png');
+    //        link.download = 'Madhu-Polisetti-CV.png';
+    //        link.click();
+    //    });
+    //}
 	
 	function triggerDomToImage() {
 		document.getElementById('dom-to-img-trigger-button').classList.add('hide-in-pdf');
         domtoimage.toPng(document.body).then((dataUrl) => {
             const link = document.createElement('a');
             link.href = dataUrl;
-            link.download = 'screenshot.png';
+            link.download = 'Madhu-Polisetti-CV.png';
             link.click();
 			document.getElementById('dom-to-img-trigger-button').classList.remove('hide-in-pdf');
         });
     }
 	
-    document.getElementById('download-cv').addEventListener('click', function () {
-        // Select the element to be converted to PDF
-        const element = document.body;
+    //document.getElementById('download-cv').addEventListener('click', function () {
+    //    // Select the element to be converted to PDF
+    //    const element = document.body;
 
-        document.getElementById('download-cv').classList.add('hide-in-pdf');
+    //    document.getElementById('download-cv').classList.add('hide-in-pdf');
 
         // Options for the PDF
-        const opt = {
-            margin:       0.5,
-            filename:     'Madhu-Polisetti-CV.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true },
-            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
+    //    const opt = {
+    //        margin:       0.5,
+    //        filename:     'Madhu-Polisetti-CV.pdf',
+    //        image:        { type: 'jpeg', quality: 0.98 },
+    //        html2canvas:  { scale: 2, useCORS: true },
+    //        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+    //    };
 
-        html2pdf().from(element).set(opt).save().then(() => {
+    //    html2pdf().from(element).set(opt).save().then(() => {
             // Remove the class after the PDF is generated
-            document.getElementById('download-cv').classList.remove('hide-in-pdf');
-        });
-    });
+    //        document.getElementById('download-cv').classList.remove('hide-in-pdf');
+    //    });
+    //});
 </script>
 
 </body>
