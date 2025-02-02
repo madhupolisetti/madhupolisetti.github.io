@@ -77,10 +77,8 @@
                     </div><!--//resume-contact-->
                 </div><!--//row-->
                 <div>
-                    <button id="download-cv" style="background-color: #54B689; border-radius: 5px">Download CV</button>
-					<button id="print-cv" style="background-color: #54B689; border-radius: 5px">Print CV</button>
-					<button style="background-color: #54B689; border-radius: 5px" onclick="triggerCaptureScreenshot()">Capture Screenshot</button>
-					<button style="background-color: #54B689; border-radius: 5px" onclick="triggerDomToImage()">DOM to Image</button>
+					<button class="hide-in-pdf" style="background-color: #54B689; border-radius: 5px" onclick="triggerCaptureScreenshot()">Capture Screenshot</button>
+					<button id="dom-to-img-trigger-button" style="background-color: #54B689; border-radius: 5px" onclick="triggerDomToImage()">Download CV</button>
                 </div>
 
             </div><!--//resume-header-->
@@ -89,7 +87,7 @@
                 <div class="row align-items-center">
                     <div class="col-12 col-md-3 col-xl-2 text-center">
                         <img class="resume-profile-image mb-3 mb-md-0 me-md-5  ms-md-0 rounded mx-auto"
-                             src="assets/images/profile-image.png" alt="image">
+                             src="assets/images/profile-image-320x320.png" alt="image">
                     </div>
 
                     <div class="col text-start">
@@ -448,11 +446,13 @@
     }
 	
 	function triggerDomToImage() {
+		document.getElementById('dom-to-img-trigger-button').classList.add('hide-in-pdf');
         domtoimage.toPng(document.body).then((dataUrl) => {
             const link = document.createElement('a');
             link.href = dataUrl;
             link.download = 'screenshot.png';
             link.click();
+			document.getElementById('dom-to-img-trigger-button').classList.remove('hide-in-pdf');
         });
     }
 	
@@ -476,24 +476,6 @@
             document.getElementById('download-cv').classList.remove('hide-in-pdf');
         });
     });
-	
-	document.getElementById('print-cv').addEventListener('click', function () {
-		// document.getElementById('print-cv').classList.add('hide-in-pdf');
-		// window.print();
-		// document.getElementById('print-cv').classList.remove('hide-in-pdf');
-		const puppeteer = require('puppeteer');
-
-		(async () => {
-			const browser = await puppeteer.launch();
-			const page = await browser.newPage();
-			await page.goto('https://yourwebsite.com', { waitUntil: 'networkidle2' });
-
-			// Capture full-page screenshot
-			await page.screenshot({ path: 'screenshot.png', fullPage: true });
-
-			await browser.close();
-		})();
-	});
 </script>
 
 </body>
