@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>90-Day Goal Timer</title>
+
+		<style>
+			body {
+				margin: 0;
+				height: 100vh;
+				background: #000;
+				color: #00ffcc;
+				font-family: "Segoe UI", Arial, sans-serif;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.container {
+				text-align: center;
+			}
+
+			h2 {
+				margin-bottom: 10px;
+				font-weight: 300;
+				letter-spacing: 2px;
+				color: #ffffffcc;
+			}
+
+			.goal {
+				color: #888;
+				margin-bottom: 25px;
+				font-size: 0.95em;
+			}
+
+			#timer {
+				font-family: "Courier New", monospace;
+				font-size: 4rem;
+				letter-spacing: 3px;
+				margin-bottom: 30px;
+				text-shadow:
+					0 0 5px #00ffcc,
+					0 0 15px #00ffcc,
+					0 0 30px #00ffcc;
+				animation: pulse 1s infinite;
+			}
+
+			@keyframes pulse {
+				0%   { opacity: 1; }
+				50%  { opacity: 0.85; }
+				100% { opacity: 1; }
+			}
+
+			label {
+				color: #aaa;
+				font-size: 0.9em;
+			}
+
+			input {
+				background: #111;
+				border: 1px solid #333;
+				color: #00ffcc;
+				padding: 6px;
+				margin-left: 6px;
+			}
+
+			button {
+				margin-left: 10px;
+				padding: 6px 14px;
+				background: #00ffcc;
+				border: none;
+				color: #000;
+				font-weight: bold;
+				cursor: pointer;
+			}
+
+			button:hover {
+				background: #00e6b8;
+			}
+			
+			#timer {
+				display: flex;
+				justify-content: center;
+				gap: 24px;
+				font-family: "Courier New", monospace;
+				margin-bottom: 30px;
+			}
+
+			.time {
+				text-align: center;
+			}
+
+			.time span:first-child {
+				display: block;
+				font-size: 3.8rem;
+				text-shadow:
+					0 0 5px #00ffcc,
+					0 0 15px #00ffcc,
+					0 0 30px #00ffcc;
+				animation: pulse 1s infinite;
+			}
+
+			.unit {
+				display: block;
+				font-size: 0.9rem;
+				letter-spacing: 1px;
+				color: #ffffffaa;
+				margin-top: 6px;
+			}
+		</style>
+	</head>
+
+	<body>
+
+	<div class="container">
+		<h2>90-Day Goal Countdown</h2>
+		<div class="goal" id="goalDateText"></div>
+		<div id="timer">
+			<span class="time"><span id="d">--</span><span class="unit">Days</span></span>
+			<span class="time"><span id="h">--</span><span class="unit">Hours</span></span>
+			<span class="time"><span id="m">--</span><span class="unit">Minutes</span></span>
+			<span class="time"><span id="s">--</span><span class="unit">Seconds</span></span>
+		</div>
+
+
+		<div>
+			<label>
+				Start Date:
+				<input type="datetime-local" id="startDate">
+			</label>
+			<button onclick="saveStart()">Save</button>
+		</div>
+	</div>
+
+	<script>
+		const STORAGE_KEY = "goalStartDate";
+		const GOAL_DAYS = 90;
+		const DAY_MS = 24 * 60 * 60 * 1000;
+
+		let goalTime = null;
+
+		function loadStartDate() {
+			const saved = localStorage.getItem(STORAGE_KEY);
+			if (saved) {
+				document.getElementById("startDate").value = saved;
+				setGoal(new Date(saved));
+			}
+		}
+
+		function saveStart() {
+			const value = document.getElementById("startDate").value;
+			if (!value) return;
+			localStorage.setItem(STORAGE_KEY, value);
+			setGoal(new Date(value));
+		}
+
+		function setGoal(startDate) {
+			goalTime = new Date(startDate.getTime() + GOAL_DAYS * DAY_MS);
+
+			const formattedGoal = goalTime.toLocaleString(undefined, {
+				day: "2-digit",
+				month: "short",   // Jan, Feb, Mar...
+				year: "numeric",
+				hour: "2-digit",
+				minute: "2-digit",
+				hour12: true
+			});
+
+			document.getElementById("goalDateText").textContent =
+				"Goal date: " + formattedGoal;
+		}
+		
+		function updateTimer() {
+			if (!goalTime) return;
+
+			const diff = goalTime - new Date();
+
+			if (diff <= 0) {
+				d.textContent = h.textContent =
+				m.textContent = s.textContent = "00";
+				return;
+			}
+
+			const seconds = Math.floor(diff / 1000) % 60;
+			const minutes = Math.floor(diff / 60000) % 60;
+			const hours   = Math.floor(diff / 3600000) % 24;
+			const days    = Math.floor(diff / DAY_MS);
+
+			d.textContent = pad(days) + ":";
+			h.textContent = pad(hours) + ":";
+			m.textContent = pad(minutes) + ":";
+			s.textContent = pad(seconds);
+		}
+
+		function pad(n) {
+			return String(n).padStart(2, "0");
+		}
+
+		loadStartDate();
+		setInterval(updateTimer, 1000);
+		updateTimer();
+	</script>
+
+	</body>
+</html>
