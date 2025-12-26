@@ -2,22 +2,38 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>90-Day Goal Timer</title>
 
 		<style>
+			html {
+				overscroll-behavior: none;
+			}
+
 			body {
 				margin: 0;
-				height: 100vh;
+				min-height: 100dvh;
 				background: #000;
 				color: #00ffcc;
 				font-family: "Segoe UI", Arial, sans-serif;
+
 				display: flex;
 				align-items: center;
 				justify-content: center;
 			}
 
 			.container {
-				text-align: center;
+				width: 100%;
+				height: 100%;
+				max-width: 1200px;
+
+				padding: clamp(16px, 4vw, 48px);
+				box-sizing: border-box;
+
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
 			}
 
 			h2 {
@@ -92,21 +108,38 @@
 
 			.time span:first-child {
 				display: block;
-				font-size: 3.8rem;
+				font-size: clamp(3rem, 9vw, 5.5rem);
 				text-shadow:
 					0 0 5px #00ffcc,
 					0 0 15px #00ffcc,
 					0 0 30px #00ffcc;
 				animation: pulse 1s infinite;
 			}
+			
+			@media (max-width: 480px) {
+				#timer {
+					flex-wrap: wrap;
+					gap: 16px;
+				}
+			}
 
 			.unit {
-				display: block;
-				font-size: 0.9rem;
-				letter-spacing: 1px;
-				color: #ffffffaa;
-				margin-top: 6px;
+				font-size: clamp(0.8rem, 2.5vw, 1rem);
+				opacity: 0.75;
 			}
+			
+			.inputs input, .inputs select, button {
+				min-height: 44px; /* Apple/Android touch standard */
+			}
+			
+			@media (orientation: landscape) and (max-height: 500px) {
+				.time span:first-child {
+					font-size: clamp(2.2rem, 6vw, 4rem);
+				}
+			}
+
+
+
 		</style>
 	</head>
 
