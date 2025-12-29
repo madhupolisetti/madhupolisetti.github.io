@@ -1,254 +1,366 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>90-Day Goal Timer</title>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>90-Day Goal Timer</title>
 
-		<style>
-			html {
-				overscroll-behavior: none;
-			}
+<style>
+html {
+    overscroll-behavior: none;
+}
 
-			body {
-				margin: 0;
-				min-height: 100dvh;
-				background: #000;
-				color: #00ffcc;
-				font-family: "Segoe UI", Arial, sans-serif;
+body {
+    margin: 0;
+    min-height: 100dvh;
+    background: #000;
+    color: #00ffcc;
+    font-family: "Segoe UI", Arial, sans-serif;
 
-				display: flex;
-				align-items: center;
-				justify-content: center;
-			}
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-			.container {
-				width: 100%;
-				height: 100%;
-				max-width: 1200px;
+.container {
+    width: 100%;
+    max-width: 1200px;
+    padding: clamp(16px, 4vw, 48px);
+    box-sizing: border-box;
 
-				padding: clamp(16px, 4vw, 48px);
-				box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-			}
+h2 {
+    margin-bottom: 14px;
 
-			h2 {
-				margin-bottom: 10px;
-				font-weight: 300;
-				letter-spacing: 2px;
-				color: #ffffffcc;
-			}
+    font-weight: 500;
+    font-size: clamp(1.3rem, 4vw, 1.8rem);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
 
-			.goal {
-				color: #888;
-				margin-bottom: 25px;
-				font-size: 0.95em;
-			}
+    color: #00ffcc;
 
-			#timer {
-				font-family: "Courier New", monospace;
-				font-size: 4rem;
-				letter-spacing: 3px;
-				margin-bottom: 30px;
-				text-shadow:
-					0 0 5px #00ffcc,
-					0 0 15px #00ffcc,
-					0 0 30px #00ffcc;
-				animation: pulse 1s infinite;
-			}
+    text-shadow:
+        0 0 3px #00ffcc,
+        0 0 10px rgba(0, 255, 204, 0.5);
 
-			@keyframes pulse {
-				0%   { opacity: 1; }
-				50%  { opacity: 0.85; }
-				100% { opacity: 1; }
-			}
+    opacity: 0.9;
+	animation: titleFade 1.2s ease-out both;
+}
 
-			label {
-				color: #aaa;
-				font-size: 0.9em;
-			}
-
-			input {
-				background: #111;
-				border: 1px solid #333;
-				color: #00ffcc;
-				padding: 6px;
-				margin-left: 6px;
-			}
-
-			button {
-				margin-left: 10px;
-				padding: 6px 14px;
-				background: #00ffcc;
-				border: none;
-				color: #000;
-				font-weight: bold;
-				cursor: pointer;
-			}
-
-			button:hover {
-				background: #00e6b8;
-			}
-			
-			#timer {
-				display: flex;
-				justify-content: center;
-				gap: clamp(10px, 3vw, 24px);
-				flex-wrap: nowrap;     /* 🔑 important */
-				width: 100%;
-			}
+@keyframes titleFade {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 0.9;
+        transform: translateY(0);
+    }
+}
 
 
-			.time {
-				text-align: center;
-			}
+.goal {
+    margin-bottom: 28px;
+    padding: 10px 18px;
+    border-radius: 999px;
 
-			.time span:first-child {
-				font-size: clamp(2.6rem, 7.5vw, 5rem);
-				white-space: nowrap;
-			}
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    color: #00ffcc;
 
-			
-			@media (max-width: 480px) {
-				#timer {
-					flex-wrap: wrap;
-					gap: 16px;
-				}
-			}
+    background: rgba(0, 255, 204, 0.08);
+    border: 1px solid rgba(0, 255, 204, 0.35);
 
-			.unit {
-				font-size: clamp(0.65rem, 2vw, 0.9rem);
-				display: block;
-				font-size: 0.9rem;
-				letter-spacing: 1px;
-				color: #ffffffaa;
-				margin-top: 6px;
-			}
+    text-shadow:
+        0 0 4px #00ffcc,
+        0 0 10px rgba(0, 255, 204, 0.6);
 
-			
-			.inputs input, .inputs select, button {
-				min-height: 44px; /* Apple/Android touch standard */
-			}
-			
-			@media (orientation: landscape) and (max-height: 500px) {
-				.time span:first-child {
-					font-size: clamp(2.2rem, 6vw, 4rem);
-				}
-			}
-			
-			@media (max-width: 430px) {
-				.time span:first-child {
-					font-size: clamp(2.4rem, 7vw, 4.6rem);
-				}
-			}
+    animation: goalGlow 4s ease-in-out infinite;
+}
 
-			
-			.controls {
-				margin-top: 24px;
-				display: flex;
-				flex-wrap: wrap;
-				gap: 10px;
-				justify-content: center;
-			}
+@keyframes goalGlow {
+    0%   { box-shadow: 0 0 6px rgba(0,255,204,0.25); }
+    50%  { box-shadow: 0 0 14px rgba(0,255,204,0.45); }
+    100% { box-shadow: 0 0 6px rgba(0,255,204,0.25); }
+}
 
 
-		</style>
-	</head>
+/* =======================
+   GOAL TIMER
+======================= */
+#timer {
+    display: flex;
+    justify-content: space-between;
+    gap: clamp(6px, 2vw, 16px);
+    width: 100%;
+    flex-wrap: nowrap;
 
-	<body>
+    font-family: "Courier New", monospace;
+    text-shadow:
+        0 0 5px #00ffcc,
+        0 0 15px #00ffcc,
+        0 0 30px #00ffcc;
+    animation: pulse 1s infinite;
+}
 
-	<div class="container">
-		<h2>90-Day Goal Countdown</h2>
-		<div class="goal" id="goalDateText"></div>
-		<div id="timer">
-			<span class="time"><span id="d">--</span><span class="unit">Days</span></span>
-			<span class="time"><span id="h">--</span><span class="unit">Hours</span></span>
-			<span class="time"><span id="m">--</span><span class="unit">Minutes</span></span>
-			<span class="time"><span id="s">--</span><span class="unit">Seconds</span></span>
-		</div>
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.85; }
+    100% { opacity: 1; }
+}
 
+.time {
+    min-width: 0;          /* 🔑 critical */
+    flex: 1 1 0;           /* 🔑 critical */
+    text-align: center;
+}
 
-		<div class="controls">
-			<label>
-				Start Date:
-				<input type="datetime-local" id="startDate">
-			</label>
+.time span:first-child {
+    font-size: clamp(2.4rem, 7.5vw, 5rem);
+    white-space: nowrap;
+    line-height: 1;
+}
+
+.unit {
+    display: block;
+    margin-top: 6px;
+    font-size: clamp(0.6rem, 2vw, 0.85rem);
+    letter-spacing: 1px;
+    color: #ffffffaa;
+}
+
+/* =======================
+   TIME SPENT
+======================= */
+.spent {
+    margin-top: 32px;
+    text-align: center;
+    opacity: 0.85;
+    width: 100%;
+}
+
+.label {
+    margin-bottom: 12px;
+    font-size: clamp(0.85rem, 3vw, 1.05rem);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.6;
+}
+
+#spent-timer {
+    display: flex;
+    justify-content: space-between;
+    gap: clamp(6px, 2vw, 16px);
+    width: 100%;
+    flex-wrap: nowrap;
+}
+
+#spent-timer {
+    text-shadow:
+        0 0 5px #00ffcc,
+        0 0 15px #00ffcc,
+        0 0 30px #00ffcc;
+    animation: pulse 1s infinite;
+}
+
+#spent-timer .time {
+    min-width: 0;
+    flex: 1 1 0;
+    text-align: center;
+}
+
+#spent-timer .time span:first-child {
+    font-size: clamp(1.5rem, 5.5vw, 2.6rem);
+    font-weight: 600;
+}
+
+/* =======================
+   CONTROLS
+======================= */
+.controls {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+label {
+    color: #aaa;
+    font-size: 0.9em;
+}
+
+input {
+    background: #111;
+    border: 1px solid #333;
+    color: #00ffcc;
+    padding: 6px;
+    margin-left: 6px;
+    min-height: 44px;
+}
+
+button {
+    min-height: 44px;
+    padding: 6px 14px;
+    background: #00ffcc;
+    border: none;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #00e6b8;
+}
+
+/* =======================
+   LANDSCAPE SAFETY
+======================= */
+@media (orientation: landscape) and (max-height: 500px) {
+    .time span:first-child {
+        font-size: clamp(2.1rem, 6vw, 4rem);
+    }
+}
+
+.start-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+
+    font-size: 0.85rem;
+    letter-spacing: 0.44em;
+    text-transform: uppercase;
+
+    color: #00ffcc;
+
+    text-shadow:
+        0 0 2px #00ffcc,
+        0 0 8px rgba(0, 255, 204, 0.35);
+
+    opacity: 0.85;
+}
+
+.start-label:focus-within {
+    opacity: 1;
+    text-shadow:
+        0 0 4px #00ffcc,
+        0 0 12px rgba(0, 255, 204, 0.6);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>90-Day Goal Timer</h2>
+    <div class="goal" id="goalDateText"></div>
+
+    <div id="timer">
+        <span class="time"><span id="d">--</span><span class="unit">Days</span></span>
+        <span class="time"><span id="h">--</span><span class="unit">Hours</span></span>
+        <span class="time"><span id="m">--</span><span class="unit">Minutes</span></span>
+        <span class="time"><span id="s">--</span><span class="unit">Seconds</span></span>
+    </div>
+
+    <div class="spent">
+        <div class="label">Time Spent</div>
+        <div id="spent-timer">
+            <span class="time"><span id="sd">--</span><span class="unit">Days</span></span>
+            <span class="time"><span id="sh">--</span><span class="unit">Hours</span></span>
+            <span class="time"><span id="sm">--</span><span class="unit">Minutes</span></span>
+            <span class="time"><span id="ss">--</span><span class="unit">Seconds</span></span>
+        </div>
+    </div>
+
+    <div class="controls">
+        <label class="start-label">
+            Start Date:
+            <input type="datetime-local" id="startDate">
 			<button onclick="saveStart()">Save</button>
-		</div>
-	</div>
+        </label>
+    </div>
+</div>
 
-	<script>
-		const STORAGE_KEY = "goalStartDate";
-		const GOAL_DAYS = 90;
-		const DAY_MS = 24 * 60 * 60 * 1000;
+<script>
+const STORAGE_KEY = "goalStartDate";
+const GOAL_DAYS = 90;
+const DAY_MS = 86400000;
 
-		let goalTime = null;
+let startDate = null;
+let goalTime = null;
 
-		function loadStartDate() {
-			const saved = localStorage.getItem(STORAGE_KEY);
-			if (saved) {
-				document.getElementById("startDate").value = saved;
-				setGoal(new Date(saved));
-			}
-		}
+function loadStartDate() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+        document.getElementById("startDate").value = saved;
+        setGoal(new Date(saved));
+    }
+}
 
-		function saveStart() {
-			const value = document.getElementById("startDate").value;
-			if (!value) return;
-			localStorage.setItem(STORAGE_KEY, value);
-			setGoal(new Date(value));
-		}
+function saveStart() {
+    const value = document.getElementById("startDate").value;
+    if (!value) return;
+    localStorage.setItem(STORAGE_KEY, value);
+    setGoal(new Date(value));
+}
 
-		function setGoal(startDate) {
-			goalTime = new Date(startDate.getTime() + GOAL_DAYS * DAY_MS);
+function setGoal(date) {
+    startDate = date;
+    goalTime = new Date(date.getTime() + GOAL_DAYS * DAY_MS);
 
-			const formattedGoal = goalTime.toLocaleString(undefined, {
-				day: "2-digit",
-				month: "short",   // Jan, Feb, Mar...
-				year: "numeric",
-				hour: "2-digit",
-				minute: "2-digit",
-				hour12: true
-			});
+    const formattedGoal = goalTime.toLocaleString(undefined, {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true
+    });
 
-			document.getElementById("goalDateText").textContent =
-				"Goal date: " + formattedGoal;
-		}
-		
-		function updateTimer() {
-			if (!goalTime) return;
+    document.getElementById("goalDateText").textContent =
+        "Goal date: " + formattedGoal;
+}
 
-			const diff = goalTime - new Date();
+function updateTimer() {
+    if (!goalTime || !startDate) return;
 
-			if (diff <= 0) {
-				d.textContent = h.textContent =
-				m.textContent = s.textContent = "00";
-				return;
-			}
+    const now = new Date();
 
-			const seconds = Math.floor(diff / 1000) % 60;
-			const minutes = Math.floor(diff / 60000) % 60;
-			const hours   = Math.floor(diff / 3600000) % 24;
-			const days    = Math.floor(diff / DAY_MS);
+    /* GOAL */
+    const diff = Math.max(0, goalTime - now);
+    const totalSeconds = Math.floor(diff / 1000);
 
-			d.textContent = pad(days) + ":";
-			h.textContent = pad(hours) + ":";
-			m.textContent = pad(minutes) + ":";
-			s.textContent = pad(seconds);
-		}
+    const d = Math.floor(totalSeconds / 86400);
+    const h = Math.floor((totalSeconds % 86400) / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
 
-		function pad(n) {
-			return String(n).padStart(2, "0");
-		}
+    document.getElementById("d").textContent = d;
+    document.getElementById("h").textContent = String(h).padStart(2, "0");
+    document.getElementById("m").textContent = String(m).padStart(2, "0");
+    document.getElementById("s").textContent = String(s).padStart(2, "0");
 
-		loadStartDate();
-		setInterval(updateTimer, 1000);
-		updateTimer();
-	</script>
+    /* TIME SPENT */
+    const spentMs = Math.max(0, now - startDate);
+    const spentSec = Math.floor(spentMs / 1000);
 
-	</body>
+    document.getElementById("sd").textContent = Math.floor(spentSec / 86400);
+    document.getElementById("sh").textContent = String(Math.floor((spentSec % 86400) / 3600)).padStart(2, "0");
+    document.getElementById("sm").textContent = String(Math.floor((spentSec % 3600) / 60)).padStart(2, "0");
+    document.getElementById("ss").textContent = String(spentSec % 60).padStart(2, "0");
+}
+
+loadStartDate();
+setInterval(updateTimer, 1000);
+updateTimer();
+</script>
+
+</body>
 </html>
