@@ -1,483 +1,682 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Madhu Polisetti - Senior Lead Software Development Engineer</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Madhu Polisetti — Senior Software Engineer specializing in backend platforms, cloud infrastructure, and API design for VoIP and messaging products.">
+<meta name="author" content="Madhu Polisetti">
+<title>Madhu Polisetti — Senior Software Engineer</title>
+<link rel="shortcut icon" href="favicon.ico">
+<style>
+  :root {
+    --bg: #edefea;
+    --fg: #12202a;
+    --fg-dim: #51636b;
+    --fg-faint: #7c8b8f;
+    --accent: #1f8f82;
+    --accent-2: #b5652f;
+    --line: rgba(18,32,42,0.14);
+    --card: #f8f9f6;
+    --grid-line: rgba(31,143,130,0.18);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0b1420; --fg: #e7f0ee; --fg-dim: #8fa3aa; --fg-faint: #55676d;
+      --accent: #57d9c8; --accent-2: #f2a65a; --line: rgba(231,240,238,0.14);
+      --card: #101c29; --grid-line: rgba(87,217,200,0.10);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0b1420; --fg: #e7f0ee; --fg-dim: #8fa3aa; --fg-faint: #55676d;
+    --accent: #57d9c8; --accent-2: #f2a65a; --line: rgba(231,240,238,0.14);
+    --card: #101c29; --grid-line: rgba(87,217,200,0.10);
+  }
+  :root[data-theme="light"] {
+    --bg: #edefea; --fg: #12202a; --fg-dim: #51636b; --fg-faint: #7c8b8f;
+    --accent: #1f8f82; --accent-2: #b5652f; --line: rgba(18,32,42,0.14);
+    --card: #f8f9f6; --grid-line: rgba(31,143,130,0.18);
+  }
 
-    <!-- Meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="Madhu Polisetti">
-    <link rel="shortcut icon" href="favicon.ico">
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6; -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  .mono { font-family: ui-monospace, SFMono-Regular, "Cascadia Code", "Roboto Mono", Consolas, monospace; }
+  h1, h2, h3 { text-wrap: balance; margin: 0; font-weight: 700; letter-spacing: -0.01em; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 28px; }
+  .wrap > h2 { font-size: clamp(1.7rem, 2.8vw, 2.3rem); margin-bottom: 28px; }
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-    <!-- FontAwesome JS-->
-    <script defer src="assets/fontawesome/js/all.min.js"></script>
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>-->
-	
-	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>-->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+  /* ---------- nav ---------- */
+  nav.top {
+    position: sticky; top: 0; z-index: 30;
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner { max-width: 1040px; margin: 0 auto; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .nav-id { font-family: ui-monospace, SFMono-Regular, "Cascadia Code", monospace; font-weight: 600; font-size: 0.92rem; flex-shrink: 0; }
+  .nav-id .dot { color: var(--accent); }
+  .nav-links { display: flex; gap: 20px; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .nav-links a { text-decoration: none; color: var(--fg-dim); }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-actions { display: flex; align-items: center; gap: 10px; }
+  .view-toggle {
+    display: inline-flex; border: 1px solid var(--line); border-radius: 4px; padding: 2px; gap: 2px;
+  }
+  .view-btn {
+    font: inherit; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; border: none; background: transparent;
+    color: var(--fg-dim); padding: 6px 10px; border-radius: 2px;
+  }
+  .view-btn.active { background: var(--accent); color: var(--bg); }
+  .btn {
+    font: inherit; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.76rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer;
+    border: 1px solid var(--accent); background: transparent; color: var(--accent);
+    padding: 8px 13px; border-radius: 3px; display: inline-flex; align-items: center; gap: 7px;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .btn:hover { background: var(--accent); color: var(--bg); }
+  .btn svg { width: 13px; height: 13px; }
+  .nav-burger {
+    display: none; width: 34px; height: 34px; border-radius: 4px; border: 1px solid var(--line);
+    background: transparent; cursor: pointer; align-items: center; justify-content: center; color: var(--fg);
+  }
+  .nav-burger svg { width: 17px; height: 17px; }
+  .nav-mobile { display: none; flex-direction: column; gap: 14px; padding: 16px 28px 22px; border-top: 1px solid var(--line); }
+  .nav-mobile.open { display: flex; }
+  .nav-mobile a { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; text-decoration: none; color: var(--fg-dim); }
+  .nav-mobile-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 4px; }
 
+  /* ---------- hero ---------- */
+  .hero {
+    padding: 84px 0 64px; position: relative;
+    background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 32px 32px;
+    -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+            mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  }
+  .hero-kicker { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.85rem; color: var(--accent); margin-bottom: 16px; }
+  .hero-name {
+    font-family: ui-monospace, SFMono-Regular, "Cascadia Code", "Roboto Mono", Consolas, monospace;
+    font-size: clamp(2.2rem, 5.6vw, 4rem); line-height: 1.05; letter-spacing: -0.02em;
+  }
+  .hero-role { margin-top: 16px; font-size: 1.18rem; color: var(--fg-dim); max-width: 48ch; }
+  .hero-summary { margin-top: 20px; font-size: 1rem; color: var(--fg-dim); max-width: 62ch; }
+  .hero-cta { margin-top: 30px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-solid {
+    font-family: ui-monospace, SFMono-Regular, monospace; font-weight: 700; font-size: 0.8rem;
+    text-transform: uppercase; letter-spacing: 0.04em; text-decoration: none;
+    background: var(--accent); color: var(--bg); padding: 12px 20px; border-radius: 3px;
+    display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--accent);
+  }
+  .btn-outline {
+    font-family: ui-monospace, SFMono-Regular, monospace; font-weight: 700; font-size: 0.8rem;
+    text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer;
+    background: transparent; color: var(--fg); padding: 12px 20px; border-radius: 3px;
+    border: 1px solid var(--line);
+  }
 
+  .signal { margin-top: 44px; height: 34px; max-width: 460px; }
+  .signal svg { width: 100%; height: 100%; display: block; }
+  .signal path { fill: none; stroke: var(--line); stroke-width: 1.5; }
+  .signal circle { fill: var(--accent); }
+  @media (prefers-reduced-motion: no-preference) {
+    .signal circle { animation: none; }
+  }
 
+  section { padding: 56px 0; border-top: 1px solid var(--line); }
 
+  /* ---------- about ---------- */
+  .about-grid { display: grid; grid-template-columns: 200px 1fr; gap: 40px; }
+  .about-photo { width: 100%; aspect-ratio: 1; border-radius: 6px; object-fit: cover; border: 1px solid var(--line); }
+  .about-text p { color: var(--fg-dim); max-width: 62ch; }
+  .stat-row { display: flex; gap: 28px; margin-top: 24px; flex-wrap: wrap; }
+  .stat b { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 1.5rem; color: var(--accent); display: block; }
+  .stat span { font-size: 0.75rem; color: var(--fg-faint); text-transform: uppercase; letter-spacing: 0.04em; }
 
-    <!-- Theme CSS -->
-    <link id="theme-style" rel="stylesheet" href="assets/css/devresume.css">
-    <style>
-        .product-logo {
-            border-radius: 50%;
-            height: 25px;
-            width: 50px;
-        }
-        @media print {
-            /* Hide the download button in the PDF */
-            #download-cv {
-                display: none;
-            }
-        }
+  /* ---------- experience ---------- */
+  .timeline { position: relative; padding-left: 32px; margin-top: 8px; }
+  .timeline::before { content: ""; position: absolute; left: 6px; top: 4px; bottom: 4px; width: 1px; background: var(--line); }
+  .titem { position: relative; padding-bottom: 38px; }
+  .titem:last-child { padding-bottom: 0; }
+  .titem::before {
+    content: ""; position: absolute; left: -32px; top: 4px; width: 13px; height: 13px;
+    border-radius: 2px; background: var(--bg); border: 2px solid var(--accent); transform: rotate(45deg);
+  }
+  .titem.current::before { background: var(--accent); }
+  .titem-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; align-items: baseline; }
+  .titem-title { font-size: 1.1rem; font-weight: 700; }
+  .titem-date { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.76rem; color: var(--fg-faint); }
+  .titem-org { color: var(--accent); font-size: 0.9rem; margin-top: 2px; }
+  .titem-org a { text-decoration: none; color: inherit; }
+  .titem-org a:hover { text-decoration: underline; }
+  .tag-current {
+    font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.64rem; text-transform: uppercase;
+    letter-spacing: 0.05em; font-weight: 700; color: var(--bg); background: var(--accent-2);
+    padding: 2px 8px; border-radius: 3px; margin-left: 8px;
+  }
+  .titem-list { margin: 12px 0 0; padding-left: 18px; color: var(--fg-dim); font-size: 0.93rem; }
+  .titem-list li { margin-bottom: 8px; }
+  .titem-list a { color: var(--accent); text-decoration: none; }
+  .titem-list a:hover { text-decoration: underline; }
 
-        .hide-in-pdf {
-            display: none;
-        }
+  /* ---------- projects ---------- */
+  .proj-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 8px; }
+  .proj-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 16px;
+    display: flex; flex-direction: column; gap: 9px; transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .proj-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .proj-top { display: flex; align-items: center; gap: 11px; }
+  .proj-logo { width: 32px; height: 32px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
+  .proj-name { font-weight: 700; font-size: 0.95rem; }
+  .proj-years { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.68rem; color: var(--fg-faint); }
+  .proj-desc { font-size: 0.83rem; color: var(--fg-dim); margin: 0; }
 
+  /* ---------- skills ---------- */
+  .skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; margin-top: 8px; }
+  .skill-group h4 { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--fg-faint); margin: 0 0 12px; }
+  .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill {
+    font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.74rem; padding: 5px 10px;
+    border-radius: 3px; border: 1px solid var(--line); color: var(--fg-dim);
+  }
 
-    </style>
+  /* ---------- footer ---------- */
+  footer.contact { padding: 56px 0 72px; text-align: center; }
+  .contact-links { margin-top: 26px; display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
+  .contact-links a { text-decoration: none; color: var(--fg-dim); font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; }
+  .contact-links a:hover { color: var(--accent); }
+  .contact-links svg { width: 16px; height: 16px; }
+  .fine-print { margin-top: 36px; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.7rem; color: var(--fg-faint); }
+
+  @media (max-width: 780px) {
+    .nav-links, .nav-actions { display: none; }
+    .nav-burger { display: inline-flex; }
+    .about-grid { grid-template-columns: 1fr; }
+    .about-photo { width: 110px; }
+    .proj-grid { grid-template-columns: repeat(2, 1fr); }
+    .skills-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    .proj-grid { grid-template-columns: 1fr; }
+    .hero { padding: 56px 0 40px; }
+  }
+
+  /* ---------- resume view (screen) ---------- */
+  .resume-view { display: none; }
+  body[data-view="resume"] .portfolio-only { display: none !important; }
+  body[data-view="resume"] .resume-view { display: block; }
+  body[data-view="resume"] .nav-links { display: none; }
+  .resume-view .page { max-width: 780px; margin: 0 auto; padding: 48px 28px 90px; }
+  .resume-view h1 { font-family: "Iowan Old Style", "Sitka Text", Georgia, serif; font-size: 2.1rem; }
+  .resume-view .role { color: var(--accent); font-weight: 600; margin-top: 6px; font-size: 1.02rem; }
+  .resume-view .meta { margin-top: 14px; font-size: 0.85rem; color: var(--fg-dim); display: flex; gap: 16px; flex-wrap: wrap; }
+  .resume-view .summary { margin-top: 18px; font-size: 0.98rem; color: var(--fg-dim); max-width: 68ch; }
+  .resume-view section { border-top: 1px solid var(--line); padding: 28px 0; }
+  .resume-view h2 { font-family: "Iowan Old Style", "Sitka Text", Georgia, serif; font-size: 1.2rem; margin-bottom: 16px; }
+  .resume-view .titem { padding-bottom: 18px; }
+  .resume-view .titem-title { font-weight: 700; font-size: 0.98rem; }
+  .resume-view .titem-date { font-size: 0.78rem; color: var(--fg-faint); }
+  .resume-view .titem-org { font-size: 0.88rem; color: var(--fg-dim); margin-top: 4px; }
+  .resume-view ul { margin: 8px 0 0; padding-left: 18px; color: var(--fg-dim); font-size: 0.9rem; }
+  .resume-view ul li { margin-bottom: 6px; }
+  .resume-view .grid-2 { display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px; }
+  .resume-view .pill-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .resume-view .pill { font-size: 0.74rem; padding: 4px 9px; border-radius: 14px; }
+  .resume-view .skill-cat { margin-bottom: 16px; }
+  .resume-view .skill-cat:last-child { margin-bottom: 0; }
+  .resume-view .skill-cat h4 {
+    font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.72rem; text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--fg-faint); margin: 0 0 8px;
+  }
+  .resume-view .prod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+  .resume-view .prod-item { padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
+  .resume-view .prod-item .yrs { color: var(--fg-faint); font-size: 0.76rem; margin-left: 8px; }
+  .resume-view .prod-item .desc { display: block; color: var(--fg-dim); font-size: 0.8rem; margin-top: 3px; }
+  @media (max-width: 600px) {
+    .resume-view .grid-2 { grid-template-columns: 1fr; }
+    .resume-view .prod-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- print ---------- */
+  @media print {
+    nav.top, .portfolio-only { display: none !important; }
+    body { background: #fff !important; color: #16202a; font-size: 10.5pt; overflow: visible; }
+    .resume-view { display: block !important; }
+    .resume-view .page { max-width: 100%; padding: 0 6mm; font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+    .resume-view h1 { font-family: Georgia, "Times New Roman", serif; font-size: 20pt; }
+    .resume-view .role { font-size: 10.5pt; }
+    .resume-view .meta { font-size: 8.5pt; color: #48555f; }
+    .resume-view .summary { font-size: 9.5pt; color: #333; }
+    .resume-view section { padding: 7pt 0; break-inside: avoid; }
+    .resume-view h2 { font-size: 12pt; border-bottom: 1px solid #ccc; padding-bottom: 3pt; }
+    .resume-view .titem { break-inside: avoid; padding-bottom: 7pt; }
+    .resume-view .titem-title { font-size: 10pt; }
+    .resume-view .titem-date, .resume-view .titem-org { font-size: 8.5pt; color: #555; }
+    .resume-view ul { font-size: 8.8pt; color: #333; }
+    .resume-view .pill { font-size: 7.5pt; border: 1px solid #ccc; }
+    .resume-view .skill-cat { margin-bottom: 6pt; break-inside: avoid; }
+    .resume-view .skill-cat h4 { font-size: 7.5pt; }
+    .resume-view .prod-item { font-size: 8.5pt; padding: 4pt 0; break-inside: avoid; }
+    .resume-view .prod-item .yrs { font-size: 7.5pt; }
+    .resume-view .prod-item .desc { font-size: 7.5pt; }
+    .resume-view a { color: inherit !important; text-decoration: none !important; }
+  }
+</style>
 </head>
-
 <body>
+<nav class="top no-print">
+  <div class="nav-inner">
+    <div class="nav-id">madhu<span class="dot">.</span>polisetti</div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#experience">Experience</a>
+      <a href="#projects">Projects</a>
+    </div>
+    <div class="nav-actions">
+      <div class="view-toggle" role="group" aria-label="Page view">
+        <button class="view-btn active" data-view-btn="portfolio" onclick="setView('portfolio')">Portfolio</button>
+        <button class="view-btn" data-view-btn="resume" onclick="setView('resume')">Resume</button>
+      </div>
+      <button class="btn" onclick="window.print()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        CV
+      </button>
+    </div>
+    <button class="nav-burger" aria-label="Menu" aria-expanded="false" onclick="toggleMenu()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+  <div class="nav-mobile" id="navMobile">
+    <a href="#about" onclick="toggleMenu()">About</a>
+    <a href="#skills" onclick="toggleMenu()">Skills</a>
+    <a href="#experience" onclick="toggleMenu()">Experience</a>
+    <a href="#projects" onclick="toggleMenu()">Projects</a>
+    <div class="nav-mobile-row">
+      <div class="view-toggle" role="group" aria-label="Page view">
+        <button class="view-btn active" data-view-btn="portfolio" onclick="setView('portfolio')">Portfolio</button>
+        <button class="view-btn" data-view-btn="resume" onclick="setView('resume')">Resume</button>
+      </div>
+      <button class="btn" onclick="window.print()">CV</button>
+    </div>
+  </div>
+</nav>
 
-<div class="main-wrapper">
-    <div class="container px-3 px-lg-5">
-        <article class="resume-wrapper mx-auto theme-bg-light p-5 mb-5 my-5 shadow-lg">
+<header class="hero portfolio-only">
+  <div class="wrap">
+    <div class="hero-kicker">Senior Software Engineer &middot; India</div>
+    <h1 class="hero-name">Madhu Polisetti</h1>
+    <p class="hero-role">I modernize the infrastructure and API platforms behind net2phone's voice &amp; messaging products.</p>
+    <p class="hero-summary">
+      12+ years building backend platforms for a global VoIP provider. This past year:
+      migrated net2phone's infrastructure to AWS CDK, modernized the public API gateway,
+      and shipped a run of platform upgrades — from pod-based deployments to a same-sprint
+      .NET&nbsp;10 migration.
+    </p>
+    <div class="hero-cta">
+      <a class="btn-solid" href="#experience">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        See my work
+      </a>
+      <button class="btn-outline" onclick="window.print()">Download CV</button>
+    </div>
+    <div class="signal" aria-hidden="true">
+      <svg viewBox="0 0 460 34" preserveAspectRatio="none">
+        <path id="route" d="M0 17 C 90 17, 108 4, 160 4 S 234 30, 286 30 S 360 4, 408 4 S 440 17, 460 17" />
+        <circle r="3.5">
+          <animateMotion dur="5.5s" repeatCount="indefinite">
+            <mpath href="#route" xlink:href="#route"/>
+          </animateMotion>
+        </circle>
+      </svg>
+    </div>
+  </div>
+</header>
 
-            <div class="resume-header">
-                <div class="row align-items-center">
-                    <div class="resume-title col-12 col-md-6 col-lg-8 col-xl-9">
-                        <h2 class="resume-name mb-0 text-uppercase">Madhu Polisetti</h2>
-                        <div class="resume-tagline mb-3 mb-md-0">Senior Lead Software Development Engineer</div>
-                    </div><!--//resume-title-->
-                    <div class="resume-contact col-12 col-md-6 col-lg-4 col-xl-3">
-                        <ul class="list-unstyled mb-0">
-                            <li class="mb-2"><i class="fas fa-phone-square fa-fw fa-lg me-2 "></i><a class="resume-link"
-                                                                                                     href="tel:#">+91 99
-                                66 22 66 45</a></li>
+<section class="about portfolio-only" id="about">
+  <div class="wrap">
+    <h2>About</h2>
+    <div class="about-grid">
+      <img class="about-photo" src="assets/images/profile-image-240x240.png" alt="Madhu Polisetti">
+      <div class="about-text">
+        <p>
+          I've spent my career on the backend of communication products — telephony routing,
+          public APIs, and lately the infrastructure-as-code that deploys all of it. I've led
+          cross-continental teams, written the OpenAPI specs other teams build against, and
+          migrated net2phone's core services off Terraform onto AWS CDK.
+        </p>
+        <p>
+          Outside of shipping code: sci-fi, long drives into the mountains, and following
+          wherever the AI-tooling space moves next.
+        </p>
+        <div class="stat-row">
+          <div class="stat"><b>12+</b><span>Years shipping</span></div>
+          <div class="stat"><b>7</b><span>Products shipped</span></div>
+          <div class="stat"><b>20</b><span>Largest team led</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-                            <li class="mb-2"><i class="fas fa-envelope-square fa-fw fa-lg me-2"></i><a
-                                    class="resume-link" href="mailto:#">nudgeme@madhup.me</a></li>
-                            <li class="mb-2"><i class="fas fa-globe fa-fw fa-lg me-2"></i><a class="resume-link"
-                                                                                             href="https://madhup.me"
-                                                                                             target="_blank">www.madhup.me</a>
-                            </li>
-                            <li class="mb-0"><i class="fas fa-map-marker-alt fa-fw fa-lg me-2"></i>India</li>
-                        </ul>
-                    </div><!--//resume-contact-->
-                </div><!--//row-->
-                <div>
-					<button class="hide-in-pdf" style="background-color: #54B689; border-radius: 5px" onclick="triggerCaptureScreenshot()">Capture Screenshot</button>
-					<button id="dom-to-img-trigger-button" style="background-color: #54B689; border-radius: 5px" onclick="triggerDomToImage()">Download CV</button>
-                </div>
+<section class="skills portfolio-only" id="skills">
+  <div class="wrap">
+    <h2>What I can do</h2>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <h4>Languages &amp; frameworks</h4>
+        <div class="pill-row">
+          <span class="pill">C#</span><span class="pill">ASP.NET / .NET 10</span>
+          <span class="pill">TypeScript</span><span class="pill">React / Next.js</span>
+          <span class="pill">Node.js</span><span class="pill">JavaScript</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h4>Cloud &amp; infrastructure</h4>
+        <div class="pill-row">
+          <span class="pill">AWS CDK</span><span class="pill">Terraform / Terragrunt</span>
+          <span class="pill">ECS / ECR / EC2 (ARM)</span><span class="pill">VPC / Route 53</span>
+          <span class="pill">SQS / SNS / SES</span><span class="pill">IAM / S3 / CloudFront</span>
+          <span class="pill">OpenTelemetry</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h4>Data &amp; messaging</h4>
+        <div class="pill-row">
+          <span class="pill">MSSQL</span><span class="pill">MySQL</span>
+          <span class="pill">RabbitMQ</span><span class="pill">Redis</span><span class="pill">Kafka</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h4>Protocols &amp; platforms</h4>
+        <div class="pill-row">
+          <span class="pill">OpenAPI / Swagger</span><span class="pill">Kong API Gateway</span>
+          <span class="pill">Server-Sent Events</span><span class="pill">SIP / VoIP / SDP</span>
+          <span class="pill">FreeSWITCH</span><span class="pill">IIS / Apache</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-            </div><!--//resume-header-->
-            <hr>
-            <div class="resume-intro py-3">
-                <div class="row align-items-center">
-                    <div class="col-12 col-md-3 col-xl-2 text-center">
-                        <img class="resume-profile-image mb-3 mb-md-0 me-md-5  ms-md-0 rounded mx-auto"
-                             src="assets/images/profile-image-240x240.png" alt="image">
-                    </div>
+<section class="experience portfolio-only" id="experience">
+  <div class="wrap">
+    <h2>Where I've worked</h2>
+    <div class="timeline">
+      <div class="titem current">
+        <div class="titem-head">
+          <div class="titem-title">Senior IT Consultant <span class="tag-current">Now</span></div>
+          <div class="titem-date">APR 2021 — PRESENT</div>
+        </div>
+        <div class="titem-org"><a href="https://www.net2phone.com/" target="_blank">net2phone</a></div>
+        <ul class="titem-list">
+          <li>Migrated the public API Gateway (Kong) to a pod-based architecture, adding system-token
+            auth, in-memory caching, and Server-Sent Events streaming.</li>
+          <li>Migrated core services from Terraform/Terragrunt to AWS CDK (TypeScript), and moved
+            compute to ARM-based infrastructure for meaningful cost savings.</li>
+          <li>Migrated the platform to .NET 10 in a single sprint, alongside a sustained tech-debt
+            reduction effort.</li>
+          <li>Delivered a uContact–Salesforce integration with customer-specific updates for GUS, and
+            completed a major Jazzware integration.</li>
+          <li>Extended the public webhook/event platform with AI-agent event types and scoped
+            subscription filters; rolled out per-region OpenTelemetry.</li>
+          <li>Architected the original public API using C# Source Generators to produce server stubs
+            from OpenAPI specs; lead a cross-continental team of seven on Scrum/JIRA.</li>
+        </ul>
+      </div>
+      <div class="titem">
+        <div class="titem-head">
+          <div class="titem-title">Associate Software Development Manager</div>
+          <div class="titem-date">DEC 2018 — MAR 2021</div>
+        </div>
+        <div class="titem-org"><a href="https://www.telebu.com" target="_blank">Telebu</a></div>
+        <ul class="titem-list">
+          <li>Architectural direction and technical leadership for a 20-developer team.</li>
+          <li>Built <a href="https://wanasatime.com/" target="_blank">WANASATIME</a> (ticketing) and
+            <a href="https://www.telebu.com/hub" target="_blank">Telebu Hub</a> (contact center).</li>
+          <li>Wired OWASP audits into the SDLC; introduced ELK for real-time monitoring.</li>
+          <li>Cut infra cost using AWS Compute Optimizer.</li>
+        </ul>
+      </div>
+      <div class="titem">
+        <div class="titem-head">
+          <div class="titem-title">Lead Software Development Engineer</div>
+          <div class="titem-date">DEC 2015 — NOV 2018</div>
+        </div>
+        <div class="titem-org"><a href="https://www.smscountry.com/" target="_blank">SMSCountry Networks Pvt Ltd</a></div>
+        <ul class="titem-list">
+          <li>Led a team of 8; mentored two engineers into Lead roles.</li>
+          <li>Unified several products onto a single API platform.</li>
+          <li>Directed <a href="https://www.telebu.com/hub" target="_blank">Telebu Hub</a> and
+            <a href="https://www.telebu.com/blocks" target="_blank">Telebu Blocks</a> delivery; core
+            technical consultant for <a href="https://www.grptalk.com/" target="_blank">grpTalk</a>.</li>
+        </ul>
+      </div>
+      <div class="titem">
+        <div class="titem-head">
+          <div class="titem-title">Software Development Engineer</div>
+          <div class="titem-date">JUL 2012 — NOV 2015</div>
+        </div>
+        <div class="titem-org"><a href="https://www.smscountry.com/" target="_blank">SMSCountry Networks Pvt Ltd</a></div>
+        <ul class="titem-list">
+          <li>Delivered <a href="https://www.q-tickets.com/" target="_blank">Q-tickets</a> (Qatar) in under two months.</li>
+          <li>Scaled <a href="https://ivrs.apsfl.co.in/" target="_blank">PBFTS</a> from 300K to 12M calls/day.</li>
+          <li>Bi-directional data sync over AWS SQS, cutting Gulf-client operating costs.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
 
-                    <div class="col text-start">
-                        <p class="mb-0">
-                        <ul>
-                            <li>
-                                A seasoned software engineer with over 12 years of experience in full-cycle application
-                                development, from planning to delivery.
-                            <li>
-                                I have expertise in leading diverse teams, providing architectural blueprints/direction,
-                                and ensuring secure and efficient product development.
-                            </li>
-                            <li>
-                                Skilled in a wide range of technologies, including C#, ASP.NET, Dot Net Core, React, MS SQL, MySQL, Messaging
-                                Brokers and AWS cloud services.
-                            </li>
-                            <li>
-                                Successfully led projects across various industries, contributing to the development of
-                                high-impact products.
-                            </li>
-                            <li>
-                                In my free time, I enjoy exploring the latest advancements in technology.
-                            </li>
-                        </ul>
-                        </p>
-                    </div><!--//col-->
-                </div>
-            </div><!--//resume-intro-->
-            <hr>
-            <div class="resume-body">
-                <div class="row">
-                    <div class="resume-main col-12 col-lg-8 col-xl-9   pe-0   pe-lg-5">
-                        <section class="work-section py-3">
-                            <h3 class="text-uppercase resume-section-heading mb-4">Work Experiences</h3>
-                            <div class="item mb-3">
-                                <div class="item-heading row align-items-center mb-2">
-                                    <h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">Senior IT Consultant</h4>
-                                    <div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">
-                                        <a href="https://www.net2phone.com/" target="_blank">net2phone</a> | Apr 2021 -
-                                        Present
-                                    </div>
+<section class="projects portfolio-only" id="projects">
+  <div class="wrap">
+    <h2>What I've shipped</h2>
+    <div class="proj-grid">
+      <div class="proj-card">
+        <div class="proj-top"><img class="proj-logo" src="assets/images/products/net2phone.jpg" alt="net2phone logo"><div><div class="proj-name">net2phone</div><div class="proj-years">2021—present</div></div></div>
+        <p class="proj-desc">Cloud VoIP &amp; UCaaS platform — public API, webhooks, gateway infra.</p>
+      </div>
+      <div class="proj-card">
+        <div class="proj-top"><img class="proj-logo" src="assets/images/products/telebu-hub.png" alt="Telebu Hub logo"><div><div class="proj-name">Telebu Hub</div><div class="proj-years">2017—2021</div></div></div>
+        <p class="proj-desc">Cloud contact-center solution for client engagement.</p>
+      </div>
+      <div class="proj-card">
+        <div class="proj-top"><img class="proj-logo" src="assets/images/products/grptalk.png" alt="grpTalk logo"><div><div class="proj-name">grpTalk</div><div class="proj-years">2016—2021</div></div></div>
+        <p class="proj-desc">Group voice/video calling product.</p>
+      </div>
+      <div class="proj-card">
+        <div class="proj-top"><img class="proj-logo" src="assets/images/products/wanasatime.png" alt="Wanasatime logo"><div><div class="proj-name">Wanasatime</div><div class="proj-years">2019—2021</div></div></div>
+        <p class="proj-desc">Online event &amp; movie ticketing platform.</p>
+      </div>
+      <div class="proj-card">
+        <div class="proj-top"><img class="proj-logo" src="assets/images/products/cinemabh.jpg" alt="CINEMA BH logo"><div><div class="proj-name">CINEMA BH</div><div class="proj-years">2019—2021</div></div></div>
+        <p class="proj-desc">Movie ticketing &amp; cinema booking platform.</p>
+      </div>
+      <div class="proj-card">
+        <div class="proj-top"><img class="proj-logo" src="assets/images/products/q-tickets.jpg" alt="Q-tickets logo"><div><div class="proj-name">Q-tickets</div><div class="proj-years">2015—2018</div></div></div>
+        <p class="proj-desc">Qatar online ticketing, delivered in &lt;2 months.</p>
+      </div>
+      <div class="proj-card">
+        <div class="proj-top"><img class="proj-logo" src="assets/images/products/smscountry.jpg" alt="SMS Country logo"><div><div class="proj-name">SMS Country</div><div class="proj-years">2012—2021</div></div></div>
+        <p class="proj-desc">Unified messaging &amp; voice API platform.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-                                </div>
-                                <div class="item-content">
-                                    <p style="display: none">TODO: Made myself comfortable working with team from different continents. </p>
-                                    <ul class="resume-list">
-                                        <li>Led a cross-continental team of seven developers, implementing Scrum
-                                            methodology through JIRA to ensure efficient workload management and
-                                            successful project delivery.
-                                        </li>
-                                        <li>Architected and developed a public-facing API for Net2Phone, leveraging C#
-                                            Source Generators to streamline server stub generation from OpenAPI
-                                            specifications.
-                                        </li>
-                                        <li>Spearheaded the development of an OpenAPI specification project,
-                                            facilitating seamless API design proposals across multiple teams within the
-                                            organization.
-                                        </li>
-                                        <li>Mentored team members, fostering a collaborative environment that enhanced
-                                            both individual and team performance.
-                                        </li>
-                                        <li>Worked on building a Salesforce Open CTI to get the net2phone calling
-                                            platform features into Salesforce
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div><!--//item-->
-                            <div class="item mb-3">
-                                <div class="item-heading row align-items-center mb-2">
-                                    <h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">Associate Software
-                                        Development Manager</h4>
-                                    <div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">
-                                        <a href="https://www.telebu.com" target="_blank">Telebu</a> | Dec 2018 - Mar
-                                        2021
-                                    </div>
+<footer class="contact portfolio-only" id="contact">
+  <div class="wrap">
+    <h2>Let's talk</h2>
+    <div class="contact-links">
+      <a href="mailto:nudgeme@madhup.me">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 6l-10 7L2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+        nudgeme@madhup.me
+      </a>
+      <a href="https://github.com/madhupolisetti" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.29-1.69-1.29-1.69-1.05-.72.08-.7.08-.7 1.17.08 1.78 1.2 1.78 1.2 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.64 1.58.24 2.75.12 3.04.74.8 1.18 1.82 1.18 3.08 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+        github.com/madhupolisetti
+      </a>
+      <a href="https://in.linkedin.com/in/madhu-polisetti" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.03-1.85-3.03-1.85 0-2.14 1.45-2.14 2.94v5.66H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+        linkedin.com/in/madhu-polisetti
+      </a>
+    </div>
+    <div class="fine-print">madhup.me</div>
+  </div>
+</footer>
 
-                                </div>
-                                <div class="item-content">
-                                    <p style="display: none">TODO:</p>
-                                    <ul class="resume-list">
-                                        <li>Provided architectural guidance and technical leadership to a team of 20
-                                            developers, ensuring the delivery of secure and robust software solutions.
-                                        </li>
-                                        <li>Developed the online event and movie ticketing platform <a
-                                                href="https://wanasatime.com/" target="_blank">WANASATIME</a></li>
-                                        <li>Developed a client contact center solution <a
-                                                href="https://www.telebu.com/hub" target="_blank">Telebu Hub</a></li>
-                                        <li>Integrated OWASP security audits into the development lifecycle,
-                                            significantly enhancing product security across the board.
-                                        </li>
-                                        <li>Introduced and implemented the ELK stack for real-time monitoring of
-                                            application health and infrastructure performance.
-                                        </li>
-                                        <li>Optimized infrastructure by leveraging AWS Compute Optimizer, resulting in
-                                            cost-effective and efficient resource allocation.
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div><!--//item-->
-                            <div class="item mb-3">
-                                <div class="item-heading row align-items-center mb-2">
-                                    <h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">Lead Software
-                                        Development Engineer</h4>
-                                    <div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">
-                                        <a href="https://www.smscountry.com/" target="_blank">SMSCountry Networks Pvt
-                                            Ltd</a> | Dec 2015 - Nov 2018
-                                    </div>
+<!-- ============ RESUME VIEW (hidden unless toggled or printing) ============ -->
+<div class="resume-view">
+  <div class="page">
+    <h1>Madhu Polisetti</h1>
+    <div class="role">Senior Software Engineer &middot; Infra &amp; API Platforms</div>
+    <div class="meta">
+      <span>nudgeme@madhup.me</span><span>madhup.me</span>
+      <span>github.com/madhupolisetti</span><span>linkedin.com/in/madhu-polisetti</span><span>India</span>
+    </div>
+    <p class="summary">
+      12+ years building and scaling backend platforms for a global VoIP provider. This past
+      year: migrated core infrastructure to AWS CDK, modernized the public API gateway (pod
+      architecture, system tokens, in-memory caching, SSE), and shipped a same-sprint .NET 10
+      migration — while leading a cross-continental engineering team.
+    </p>
 
-                                </div>
-                                <div class="item-content">
-                                    <p style="display: none">TODO:</p>
-                                    <ul class="resume-list">
-                                        <li>Led a team of 8 developers, mentoring two team members to become eligible
-                                            for Lead Engineer roles.
-                                        </li>
-                                        <li>Unified diverse product offerings into a single API platform, significantly
-                                            enhancing efficiency and scalability.
-                                        </li>
-                                        <li>Directed the simultaneous development of two products (<a
-                                                href="https://www.telebu.com/hub" target="_blank">Telebu Hub</a> and <a
-                                                href="https://www.telebu.com/blocks" target="_blank">Telebu Blocks</a>)
-                                            while serving as a core technical consultant for an additional product <a
-                                                    href="https://www.grptalk.com/" target="_blank">grpTalk</a>.
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div><!--//item-->
-                            <div class="item">
-                                <div class="item-heading row align-items-center mb-2">
-                                    <h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">Software Development
-                                        Engineer</h4>
-                                    <div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">
-                                        <a href="https://www.smscountry.com/" target="_blank">SMSCountry Networks Pvt
-                                            Ltd</a> | Jul 2012 - Nov 2015
-                                    </div>
+    <section>
+      <h2>Experience</h2>
+      <div class="titem">
+        <div class="titem-title">Senior IT Consultant — net2phone</div>
+        <div class="titem-date">Apr 2021 — Present</div>
+        <ul>
+          <li>Migrated the public API Gateway (Kong) to a pod-based architecture, adding system-token auth, in-memory caching, and Server-Sent Events streaming.</li>
+          <li>Migrated core services from Terraform/Terragrunt to AWS CDK (TypeScript) and moved compute to ARM-based infrastructure for meaningful cost savings; migrated the platform to .NET 10 in a single sprint.</li>
+          <li>Delivered the uContact–Salesforce integration (incl. GUS customer updates) and a major Jazzware integration; extended the webhook/event platform with AI-agent event types.</li>
+          <li>Architected the original public API using C# Source Generators from OpenAPI specs; lead a 7-person cross-continental team on Scrum/JIRA.</li>
+        </ul>
+      </div>
+      <div class="titem">
+        <div class="titem-title">Associate Software Development Manager — Telebu</div>
+        <div class="titem-date">Dec 2018 — Mar 2021</div>
+        <ul>
+          <li>Gave architectural direction and technical leadership to a 20-developer team delivering secure, production-grade software.</li>
+          <li>Built the WANASATIME ticketing platform and the Telebu Hub contact-center product.</li>
+          <li>Wired OWASP audits into the SDLC, introduced ELK for real-time monitoring, and cut infra cost via AWS Compute Optimizer.</li>
+        </ul>
+      </div>
+      <div class="titem">
+        <div class="titem-title">Lead Software Development Engineer — SMSCountry Networks</div>
+        <div class="titem-date">Dec 2015 — Nov 2018</div>
+        <ul>
+          <li>Led a team of 8, mentoring two engineers into Lead roles.</li>
+          <li>Unified several product offerings onto a single API platform, improving scalability.</li>
+          <li>Directed simultaneous delivery of Telebu Hub and Telebu Blocks; served as core technical consultant for grpTalk.</li>
+        </ul>
+      </div>
+      <div class="titem">
+        <div class="titem-title">Software Development Engineer — SMSCountry Networks</div>
+        <div class="titem-date">Jul 2012 — Nov 2015</div>
+        <ul>
+          <li>Delivered the Q-tickets (Qatar) online ticketing platform in under two months.</li>
+          <li>Scaled the PBFTS government communications platform from 300K to 12M calls a day.</li>
+          <li>Implemented bi-directional data sync over AWS SQS, cutting operating costs for Gulf-based clients.</li>
+        </ul>
+      </div>
+    </section>
 
-                                </div>
-                                <div class="item-content">
-                                    <p style="display: none;">TODO:</p>
-                                    <ul class="resume-list">
-                                        <li>Played a key role in delivering an online ticketing platform for Qatar (<a
-                                                href="https://www.q-tickets.com/" target="_blank">Q-tickets</a>) in
-                                            under 2 months.
-                                        </li>
-                                        <li>Scaled application processing capabilities from 300,000 to 12 million calls
-                                            per day, demonstrating expertise in high-traffic environments for a
-                                            government communication platform <a href="https://ivrs.apsfl.co.in/"
-                                                                                 target="_blank">PBFTS</a>.
-                                        </li>
-                                        <li>Implemented bi-directional data synchronization using AWS SQS, reducing
-                                            operational costs for Gulf-based clients.
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div><!--//item-->
+    <section>
+      <h2>Products worked on</h2>
+      <div class="prod-grid">
+        <div class="prod-item"><b>net2phone</b><span class="yrs">2021 – present</span><span class="desc">Cloud VoIP &amp; UCaaS platform — public API, webhooks, gateway infra</span></div>
+        <div class="prod-item"><b>Telebu Hub</b><span class="yrs">2017 – 2021</span><span class="desc">Cloud contact-center solution for client engagement</span></div>
+        <div class="prod-item"><b>grpTalk</b><span class="yrs">2016 – 2021</span><span class="desc">Group voice/video calling product</span></div>
+        <div class="prod-item"><b>Wanasatime</b><span class="yrs">2019 – 2021</span><span class="desc">Online event &amp; movie ticketing platform</span></div>
+        <div class="prod-item"><b>CINEMA BH</b><span class="yrs">2019 – 2021</span><span class="desc">Movie ticketing &amp; cinema booking platform</span></div>
+        <div class="prod-item"><b>Q-tickets</b><span class="yrs">2015 – 2018</span><span class="desc">Qatar online ticketing, delivered in &lt;2 months</span></div>
+        <div class="prod-item"><b>SMS Country</b><span class="yrs">2012 – 2021</span><span class="desc">Unified messaging &amp; voice API platform</span></div>
+      </div>
+    </section>
 
-                        </section><!--//work-section-->
+    <section>
+      <h2>Skills</h2>
+      <div class="skill-cat">
+        <h4>Languages &amp; frameworks</h4>
+        <div class="pill-row">
+          <span class="pill">C#</span><span class="pill">ASP.NET / .NET 10</span><span class="pill">TypeScript</span>
+          <span class="pill">React / Next.js</span><span class="pill">Node.js</span><span class="pill">JavaScript</span>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <h4>Cloud &amp; infrastructure</h4>
+        <div class="pill-row">
+          <span class="pill">AWS CDK</span><span class="pill">Terraform / Terragrunt</span>
+          <span class="pill">ECS / ECR / EC2 (ARM)</span><span class="pill">VPC / Route 53</span>
+          <span class="pill">SQS / SNS / SES</span><span class="pill">IAM / S3 / CloudFront</span>
+          <span class="pill">OpenTelemetry</span>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <h4>Data &amp; messaging</h4>
+        <div class="pill-row">
+          <span class="pill">MSSQL</span><span class="pill">MySQL</span>
+          <span class="pill">RabbitMQ</span><span class="pill">Redis</span><span class="pill">Kafka</span>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <h4>Protocols &amp; platforms</h4>
+        <div class="pill-row">
+          <span class="pill">OpenAPI / Swagger</span><span class="pill">Kong API Gateway</span>
+          <span class="pill">Server-Sent Events</span><span class="pill">SIP / VoIP / SDP</span>
+          <span class="pill">FreeSWITCH</span><span class="pill">IIS / Apache</span>
+        </div>
+      </div>
+    </section>
 
-
-                        <section class="project-section py-3">
-                            <h3 class="text-uppercase resume-section-heading mb-4">Products worked</h3>
-                            <div class="item mb-3">
-                                <div class="item-heading row align-items-center mb-2">
-                                    <img src="assets/images/products/net2phone.jpg" class="product-logo"/>
-                                    <h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">net2phone</h4>
-                                    <div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">
-                                        2021 - Present
-                                    </div>
-                                </div>
-                                <div class="item-content">
-                                    <p></p>
-                                </div>
-                            </div><!--//item-->
-                            <div class="item">
-                                <div class="item-heading row align-items-center mb-2">
-                                    <img src="assets/images/products/telebu-hub.png" class="product-logo" />
-                                    <h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">Telebu Hub</h4>
-                                    <div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">
-                                        2017 - 2021
-                                    </div>
-                                </div>
-                                <div class="item-content">
-                                    <p></p>
-                                </div>
-                            </div><!--//item-->
-                            <div class="item">
-                                <div class="item-heading row align-items-center mb-2">
-                                    <img src="assets/images/products/grptalk.png" class="product-logo" />
-                                    <h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">grpTalk</h4>
-                                    <div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">
-                                        2016 - 2021
-                                    </div>
-                                </div>
-                                <div class="item-content">
-                                    <p></p>
-                                </div>
-                            </div><!--//item-->
-                            <div class="item">
-                                <div class="item-heading row align-items-center mb-2">
-                                    <img src="assets/images/products/wanasatime.png" class="product-logo" />
-                                    <h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">Wanasatime</h4>
-                                    <div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">
-                                        2019 - 2021
-                                    </div>
-                                </div>
-                                <div class="item-content">
-                                    <p></p>
-                                </div>
-                            </div><!--//item-->
-                            <div class="item">
-                                <div class="item-heading row align-items-center mb-2">
-                                    <img src="assets/images/products/cinemabh.jpg" class="product-logo" />
-                                    <h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">CINEMA BH</h4>
-                                    <div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">
-                                        2019 - 2021
-                                    </div>
-                                </div>
-                                <div class="item-content">
-                                    <p></p>
-                                </div>
-                            </div><!--//item-->
-                            <div class="item">
-                                <div class="item-heading row align-items-center mb-2">
-                                    <img src="assets/images/products/q-tickets.jpg" class="product-logo" />
-                                    <h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">Q Tickets</h4>
-                                    <div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">
-                                        2015 - 2018
-                                    </div>
-                                </div>
-                                <div class="item-content">
-                                    <p></p>
-                                </div>
-                            </div><!--//item-->
-                            <div class="item">
-                                <div class="item-heading row align-items-center mb-2">
-                                    <img src="assets/images/products/smscountry.jpg" class="product-logo" />
-                                    <h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">SMS Country</h4>
-                                    <div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">
-                                        2012 - 2021
-                                    </div>
-                                </div>
-                                <div class="item-content">
-                                    <p></p>
-                                </div>
-                            </div><!--//item-->
-                        </section><!--//project-section-->
-                    </div><!--//resume-main-->
-                    <aside class="resume-aside col-12 col-lg-4 col-xl-3 px-lg-4 pb-lg-4">
-                        <section class="skills-section py-3">
-                            <h3 class="text-uppercase resume-section-heading mb-4">Skills</h3>
-                            <div class="item">
-                                <h4 class="item-title">Technical Stack</h4>
-                                <ul class="list-unstyled resume-skills-list">
-                                    <li class="mb-2">JavaScript/JQuery/ReactJS/NextJS/NodeJS/Typescript</li>
-                                    <li class="mb-2">C#/ASP.NET/.NET Core/Micro Services</li>
-                                    <li class="mb-2">MSSQL/MySQL/RabbitMQ/Redis/Kafka</li>
-                                    <li class="mb-2">HTTP(S)/SMTP/SIP/VoIP/SDP/RDP</li>
-                                    <li class="mb-2">IIS/Apache</li>
-									<li class="mb-2">AWS: EC2/ECS/ECR/VPC/Route 53/SQS/SES/SNS/IAM/S3/Cloud Front</li>
-                                    <li class="mb-2">Object-oriented design</li>
-                                    <li class="mb-2">Design and implement database structures</li>
-                                    <li class="mb-2">Lead and deliver complex software systems</li>
-                                    <li class="mb-2">FreeSWITCH/Github/Jira</li>
-                                </ul>
-                            </div><!--//item-->
-                            <div class="item">
-                                <h4 class="item-title">Professional</h4>
-                                <ul class="list-unstyled resume-skills-list">
-                                    <li class="mb-2">Effective communication</li>
-                                    <li class="mb-2">Team player
-                                    <li>
-                                    <li class="mb-2">Strong problem solver</li>
-                                    <li>Good time management</li>
-                                </ul>
-                            </div><!--//item-->
-                        </section><!--//skills-section-->
-                        <section class="education-section py-3">
-                            <h3 class="text-uppercase resume-section-heading mb-4">Education</h3>
-                            <ul class="list-unstyled resume-education-list">
-                                <li class="mb-3">
-                                    <div class="resume-degree font-weight-bold"><b>Bachelor of Technology in Computer
-                                        Science Engineering</b></div>
-                                    <div class="resume-degree-org text-muted"><i>Jawaharlal Nehru Technological
-                                        University (2007 - 2011)</i></div>
-                                </li>
-                            </ul>
-                        </section><!--//education-section-->
-                        <section class="education-section py-3" style="display: none">
-                            <h3 class="text-uppercase resume-section-heading mb-4">Awards</h3>
-                            <ul class="list-unstyled resume-awards-list">
-                                <li class="mb-3">
-                                    <div class="font-weight-bold">Award Lorem Ipsum</div>
-                                    <div class="text-muted">Microsoft lorem ipsum (2023)</div>
-                                </li>
-                                <li>
-                                    <div class="font-weight-bold">Award Donec Sodales</div>
-                                    <div class="text-muted">Oracle Aenean (2020)</div>
-                                </li>
-                            </ul>
-                        </section><!--//education-section-->
-                        <section class="skills-section py-3">
-                            <h3 class="text-uppercase resume-section-heading mb-4">Languages</h3>
-                            <ul class="list-unstyled resume-lang-list">
-                                <li class="mb-2">English <span class="text-muted">(Professional)</span></li>
-                                <li class="mb-2">Telugu <span class="text-muted">(Native)</span></li>
-                                <li class="mb-2">Hindi <span class="text-muted">(Moderate)</span></li>
-                            </ul>
-                        </section><!--//certificates-section-->
-                        <section class="skills-section py-3">
-                            <h3 class="text-uppercase resume-section-heading mb-4">Interests</h3>
-							<div>
-								I love spending time outdoors (driving, mountains), but when indoors, I enjoy sci-fi and fantasy movies and shows, and I often explore the latest technology advancements in my free time.
-							</div>
-                        </section><!--//certificates-section-->
-
-                    </aside><!--//resume-aside-->
-                </div><!--//row-->
-            </div><!--//resume-body-->
-            <hr>
-            <div class="resume-footer text-center">
-                <ul class="resume-social-list list-inline mx-auto mb-0 d-inline-block text-muted">
-                    <li class="list-inline-item mb-lg-0 me-3">
-                        <a class="resume-link" href="https://github.com/madhupolisetti" target="_blank">
-                            <i class="fab fa-github-square fa-2x me-2" data-fa-transform="down-4"></i>
-                            <span class="d-none d-lg-inline-block text-muted">github.com/madhupolisetti</span>
-                        </a>
-                    </li>
-                    <li class="list-inline-item mb-lg-0 me-3">
-                        <a class="resume-link" href="https://in.linkedin.com/in/madhu-polisetti" target="_blank">
-                            <i class="fab fa-linkedin fa-2x me-2" data-fa-transform="down-4"></i>
-                            <span class="d-none d-lg-inline-block text-muted">linkedin.com/in/madhu-polisetti</span>
-                        </a>
-                    </li>
-                    <li class="list-inline-item mb-lg-0 me-lg-3" style="display: none">
-                        <a class="resume-link" href="#">
-                            <i class="fab fa-twitter-square fa-2x me-2" data-fa-transform="down-4"></i>
-                            <span class="d-none d-lg-inline-block text-muted">@twittername</span>
-                        </a>
-                    </li>
-                </ul>
-            </div><!--//resume-footer-->
-        </article>
-
-    </div><!--//container-->
-
-</div><!--//main-wrapper-->
+    <div class="grid-2">
+      <section>
+        <h2>Education</h2>
+        <div class="titem">
+          <div class="titem-title">B.Tech, Computer Science</div>
+          <div class="titem-date">JNTU · 2007 — 2011</div>
+        </div>
+      </section>
+      <section>
+        <h2>Languages</h2>
+        <div class="titem-org">English (Professional)<br>Telugu (Native)<br>Hindi (Moderate)</div>
+      </section>
+    </div>
+  </div>
+</div>
 
 <script>
-	//function triggerCaptureScreenshot() {
-    //    html2canvas(document.body).then(canvas => {
-    //        const link = document.createElement('a');
-    //        link.href = canvas.toDataURL('image/png');
-    //        link.download = 'Madhu-Polisetti-CV.png';
-    //        link.click();
-    //    });
-    //}
-	
-	function triggerDomToImage() {
-		document.getElementById('dom-to-img-trigger-button').classList.add('hide-in-pdf');
-        domtoimage.toPng(document.body).then((dataUrl) => {
-            const link = document.createElement('a');
-            link.href = dataUrl;
-            link.download = 'Madhu-Polisetti-CV.png';
-            link.click();
-			document.getElementById('dom-to-img-trigger-button').classList.remove('hide-in-pdf');
-        });
-    }
-	
-    //document.getElementById('download-cv').addEventListener('click', function () {
-    //    // Select the element to be converted to PDF
-    //    const element = document.body;
-
-    //    document.getElementById('download-cv').classList.add('hide-in-pdf');
-
-        // Options for the PDF
-    //    const opt = {
-    //        margin:       0.5,
-    //        filename:     'Madhu-Polisetti-CV.pdf',
-    //        image:        { type: 'jpeg', quality: 0.98 },
-    //        html2canvas:  { scale: 2, useCORS: true },
-    //        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-    //    };
-
-    //    html2pdf().from(element).set(opt).save().then(() => {
-            // Remove the class after the PDF is generated
-    //        document.getElementById('download-cv').classList.remove('hide-in-pdf');
-    //    });
-    //});
+  function setView(view) {
+    document.body.setAttribute('data-view', view);
+    document.querySelectorAll('[data-view-btn]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-view-btn') === view);
+    });
+    try { localStorage.setItem('cvView', view); } catch (e) {}
+  }
+  function toggleMenu() {
+    var nav = document.getElementById('navMobile');
+    var open = nav.classList.toggle('open');
+    document.querySelector('.nav-burger').setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  (function () {
+    try {
+      var saved = localStorage.getItem('cvView');
+      if (saved === 'resume') { setView('resume'); }
+    } catch (e) {}
+  })();
 </script>
-
 </body>
-</html> 
-
+</html>
